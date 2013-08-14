@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PXML xmlns="http://openpandora.org/namespaces/PXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PXML_schema.xsd">
+  <package id="mini-c4a-mini-c4a-1337">
+    <version major="1" minor="0" release="0" build="0"/>
+    <author name="Ziz" website="http://ziz.openhandhelds.org"/>
+    <titles>
+      <title lang="en_US">
+        Mini-C4A
+      </title>
+    </titles>
+    <title lang="en_US">
+      Mini-C4A
+    </title>
+    <descriptions>
+      <description lang="en_US">
+				An alternative manager for Compo4all profiles.
+      </description>
+    </descriptions>
+    <description lang="en_US">
+			An alternatie manager for Compo4all profiles.
+    </description>
+    <icon src="./mini-c4a.png"/>
+  </package>
+  <application id="mini-c4a-mini-c4a-1337" appdata="mini-c4a">
+    <exec command="./mini-c4a.sh"/>
+    <title lang="en_US">Mini-C4A</title>
+    <author name="Ziz" website="http://ziz.openhandhelds.org"/>
+    <version major="1" minor="0" release="0" build="0"/>
+    <osversion major="1" minor="0" release="0" build="0"/>
+    <description lang="en_US">A compo4all profile manager</description>
+    <icon src="./mini-c4a.png"/>
+    <previewpics>
+      <pic src="previews/screenshot1.png"/>
+      <pic src="previews/screenshot2.png"/>
+      <pic src="previews/screenshot3.png"/>
+      <pic src="previews/screenshot4.png"/>
+    </previewpics>
+    <licenses>
+      <license name="GPLv2+" url="http://www.gnu.org/licenses/gpl-2.0.html" sourcecodeurl="https://github.com/theZiz/mini-c4a"/>
+      <license name="MPL1.1" url="http://www.mozilla.org/MPL/1.1/" sourcecodeurl="https://github.com/theZiz/mini-c4a"/>
+    </licenses>
+    <categories>
+      <category name="Game">
+        <subcategory name="BlocksGame"/>
+      </category>
+    </categories>
+  </application>
+</PXML>
