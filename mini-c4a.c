@@ -285,7 +285,6 @@ void resize(Uint16 w,Uint16 h)
 		spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_ALWAYS,0,h-w*48/320,w,w*48/320,spLoadSurface("./images/keyboard1280.png"),spLoadSurface("./images/keyboardShift1280.png"));
   //Setup of the new/resized window
   spSelectRenderTarget(spGetWindowSurface());
-  spSetPerspective(50.0,(float)spGetWindowSurface()->w/(float)spGetWindowSurface()->h,1.0,100);
 	spFontShadeButtons(1);
 
 	//Font Loading
