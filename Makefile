@@ -21,7 +21,7 @@ SPARROW_LIB = $(SPARROW_FOLDER)
 endif
 LIB += -L$(SPARROW_LIB)
 INCLUDE += -I$(SPARROW_FOLDER)
-DYNAMIC += -lsparrow3d -lsparrowNet -DDO_USE_NOT_WASD_BUTTONS
+DYNAMIC += -lsparrow3d -lsparrowNet
 
 all: mini-c4a
 	@echo "=== Built for Target "$(TARGET)" ==="
