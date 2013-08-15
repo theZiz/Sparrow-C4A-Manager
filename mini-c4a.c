@@ -33,7 +33,7 @@ SDL_Surface* banner;
 int mode = 0; //0 no prof file found, 1 profile file exists
 int askMode = 0;
 int line = 0;
-char shortName[256] = "";
+char shortName[4] = "";
 char longName[256] = "";
 char password[256] = "";
 char mail[256] = "";
@@ -102,17 +102,22 @@ void draw( void )
 			break;
 		case 2:
 			spInterpolateTargetToColor(0,3*SP_ONE/4);
-			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Your 3 Letter Nick needs exactly 3 BIG letters.", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Your 3 Letter Nick needs 3 alphanumeric letters.", font);
 			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Okay...", font);
 			break;
 		case 3:
 			spInterpolateTargetToColor(0,3*SP_ONE/4);
-			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "You let your Display name empty!", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Only numbers and characters are allowed for your Nick!", font);
 			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Uuups...", font);
 			break;
 		case 4:
 			spInterpolateTargetToColor(0,3*SP_ONE/4);
 			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Only numbers and characters are allowed for passwords!", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Okay...", font);
+			break;
+		case 5:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "IF you enter a e-mail, make sure it contains an @.", font);
 			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Okay...", font);
 			break;
 	}	
@@ -135,23 +140,28 @@ int capital(char c)
 {
 	if ('A' <= c && c <= 'Z')
 		return 1;
+	if ('0' <= c && c <= '9')
+		return 1;
 	return 0;
 }
 
 int check_shortname()
 {
-	if (capital(shortName[0]) && 
-	    capital(shortName[1]) &&
-	    capital(shortName[2]) &&
-	    shortName[3] == 0)
-		return 0;
-	return 1;
+	int i;
+	for (i = 0; i < 3; i++)
+		if (!capital(shortName[i]) || shortName[i]==0)
+			return 1;
+	return 0;
 }
 
 int check_longname()
 {
 	if (longName[0] == 0)
 		return 1;
+	int i;
+	for (i = 0; longName[i] != 0; i++)
+		if (!alpha_numeric(longName[i]))
+			return 1;
 	return 0;
 }
 
@@ -166,6 +176,17 @@ int check_password()
 	return 0;
 }
 
+int check_mail()
+{
+	if (mail[0] == 0)
+		return 0;
+	int i;
+	for (i = 0; mail[i] != 0; i++)
+		if (mail[i] == '@')
+			return 0;
+	return 1;
+}
+
 int calc(Uint32 steps)
 {
 	if ( spGetInput()->button[SP_BUTTON_SELECT] )
@@ -177,6 +198,9 @@ int calc(Uint32 steps)
 			if ( spGetInput()->button[SP_BUTTON_START] )
 			{
 				spGetInput()->button[SP_BUTTON_START] = 0;
+				spInterpolateTargetToColor(0,3*SP_ONE/4);
+				spFontDrawMiddle( screen->w/2, screen->h/2, 0, "Connecting to server...", font);
+				spFlip();
 				spNetC4ADeleteAccount(profile);
 				spNetC4ADeleteProfileFile();
 				profile = NULL;
@@ -203,6 +227,14 @@ int calc(Uint32 steps)
 	}
 	if (askMode)
 		return 0;
+	
+	int i;
+	for (i = 0; shortName[i] != 0; i++)
+	{
+		if ('a' <= shortName[i] && shortName[i] <= 'z')
+			shortName[i] += 'A'-'a';
+	}
+		
 	if ( spGetInput()->button[SP_BUTTON_R])
 	{
 		line = (line + 1) % 4;
@@ -210,7 +242,7 @@ int calc(Uint32 steps)
 		blink = 0;
 		switch (line)
 		{
-			case 0: spPollKeyboardInput(shortName,256,SP_BUTTON_B_MASK); break;
+			case 0: spPollKeyboardInput(shortName,3,SP_BUTTON_B_MASK); break;
 			case 1: spPollKeyboardInput(longName,256,SP_BUTTON_B_MASK); break;
 			case 2: spPollKeyboardInput(password,256,SP_BUTTON_B_MASK); break;
 			case 3: spPollKeyboardInput(mail,256,SP_BUTTON_B_MASK); break;
@@ -223,7 +255,7 @@ int calc(Uint32 steps)
 		blink = 0;
 		switch (line)
 		{
-			case 0: spPollKeyboardInput(shortName,256,SP_BUTTON_B_MASK); break;
+			case 0: spPollKeyboardInput(shortName,3,SP_BUTTON_B_MASK); break;
 			case 1: spPollKeyboardInput(longName,256,SP_BUTTON_B_MASK); break;
 			case 2: spPollKeyboardInput(password,256,SP_BUTTON_B_MASK); break;
 			case 3: spPollKeyboardInput(mail,256,SP_BUTTON_B_MASK); break;
@@ -232,27 +264,30 @@ int calc(Uint32 steps)
 	if ( spGetInput()->button[SP_BUTTON_START] )
 	{
 		spGetInput()->button[SP_BUTTON_START] = 0;
-		if (mode == 0)
+		if (check_shortname())
+			askMode = 2;
+		else
+		if (check_longname())
+			askMode = 3;
+		else
+		if (check_password())
+			askMode = 4;
+		else
+		if (check_mail())
+			askMode = 5;
+		else
 		{
-			if (check_shortname())
-				askMode = 2;
-			else
-			if (check_longname())
-				askMode = 3;
-			else
-			if (check_password())
-				askMode = 4;
-			else
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2, 0, "Connecting to server...", font);
+			spFlip();
+			if (mode == 0)
 			{
-				spInterpolateTargetToColor(0,3*SP_ONE/4);
-				spFontDrawMiddle( screen->w/2, screen->h/2, 0, "Connecting to server...", font);
-				spFlip();
 				profile = spNetC4ACreateProfile(longName,shortName,password,mail);
 				mode = 1;
 			}
+			else
+				spNetC4AEditProfile(profile,longName,shortName,password,mail);
 		}
-		else
-			spNetC4AEditProfile(profile,longName,shortName,password,mail);
 	}
 	if ( mode == 1 && spGetInput()->button[SP_BUTTON_X] )
 	{
@@ -334,13 +369,13 @@ int main(int argc, char **argv)
 	spSetZTest(0);
 	banner = spLoadSurface("images/banner.png");
 
-	spPollKeyboardInput(shortName,256,SP_BUTTON_B_MASK);
+	spPollKeyboardInput(shortName,3,SP_BUTTON_B_MASK);
 	
 	profile = spNetC4AGetProfile();
 	if (profile)
 	{
 		memcpy(longName,profile->longname,256);
-		memcpy(shortName,profile->shortname,256);
+		memcpy(shortName,profile->shortname,4);
 		memcpy(password,profile->password,256);
 		memcpy(mail,profile->email,256);
 		mode = 1;
