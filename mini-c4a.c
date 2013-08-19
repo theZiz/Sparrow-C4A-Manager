@@ -30,7 +30,11 @@ spFontPointer font = NULL;
 spFontPointer font_small = NULL;
 SDL_Surface* banner;
 
+#define TIME_OUT 10000
+
 int mode = 0; //0 no prof file found, 1 profile file exists
+int nextMode = 0;
+int timeOut = 0;
 int askMode = 0;
 int line = 0;
 char shortName[4] = "";
@@ -39,6 +43,7 @@ char password[256] = "";
 char mail[256] = "";
 int blink = 0;
 spNetC4AProfilePointer profile;
+SDL_Thread* thread = NULL;
 
 void draw( void )
 {
@@ -120,8 +125,20 @@ void draw( void )
 			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "IF you enter a e-mail, make sure it contains an @.", font);
 			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Okay...", font);
 			break;
+		case 6:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Couldn't connect to Server! Check your connection.", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
+			break;
 	}	
-		
+	if (spNetC4AGetStatus() > 0)
+	{
+		spInterpolateTargetToColor(0,3*SP_ONE/4);
+		spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Connecting to server...", font);
+		char buffer[256];
+		sprintf(buffer,"Timeout in %i.%i",timeOut/1000,(timeOut/100)%10);
+		spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, buffer, font);
+	}		
 	spFlip();
 }
 
@@ -187,24 +204,47 @@ int check_mail()
 	return 1;
 }
 
+int right_after_status = 0;
+
 int calc(Uint32 steps)
 {
 	if ( spGetInput()->button[SP_BUTTON_SELECT_NOWASD] )
 		return 1;
 	blink+=steps;
+	if (spNetC4AGetStatus() > 0)
+	{
+		right_after_status = 1;
+		timeOut-=steps;
+		if (timeOut <= 0)
+		{
+			SDL_KillThread(thread);
+			right_after_status = 0;
+			askMode = 6;
+		}
+		else
+			return 0;
+	}
+	if (right_after_status)
+	{
+		int result;
+		SDL_WaitThread(thread,&result);
+		if (result == 0)
+			mode = nextMode;
+		else
+			askMode = 6;
+	}
+	right_after_status = 0;
 	switch ( askMode )
 	{
 		case 1:
 			if ( spGetInput()->button[SP_BUTTON_START_NOWASD] )
 			{
 				spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
-				spInterpolateTargetToColor(0,3*SP_ONE/4);
-				spFontDrawMiddle( screen->w/2, screen->h/2, 0, "Connecting to server...", font);
-				spFlip();
-				spNetC4ADeleteAccount(profile);
-				spNetC4ADeleteProfileFile();
-				profile = NULL;
-				mode = 0;
+				thread = spNetC4ADeleteAccount(&profile,1);
+				if (thread)
+					right_after_status = 1;
+				nextMode = 0;
+				timeOut = TIME_OUT;
 				sprintf(longName,"");
 				sprintf(shortName,"");
 				sprintf(password,"");
@@ -217,7 +257,7 @@ int calc(Uint32 steps)
 				askMode = 0;
 			}
 			break;
-		case 2: case 3: case 4: case 5:
+		case 2: case 3: case 4: case 5: case 6:
 			if ( spGetInput()->button[SP_BUTTON_B_NOWASD] )
 			{
 				spGetInput()->button[SP_BUTTON_B_NOWASD] = 0;
@@ -277,33 +317,28 @@ int calc(Uint32 steps)
 			askMode = 5;
 		else
 		{
-			spInterpolateTargetToColor(0,3*SP_ONE/4);
-			spFontDrawMiddle( screen->w/2, screen->h/2, 0, "Connecting to server...", font);
-			spFlip();
 			if (mode == 0)
 			{
-				profile = spNetC4ACreateProfile(longName,shortName,password,mail);
-				mode = 1;
+				thread = spNetC4ACreateProfile(&profile,longName,shortName,password,mail);
+				if (thread)
+					right_after_status = 1;
+				nextMode = 1;
+				timeOut = TIME_OUT;
 			}
 			else
-				spNetC4AEditProfile(profile,longName,shortName,password,mail);
+			{
+				thread = spNetC4AEditProfile(&profile,longName,shortName,password,mail);
+				if (thread)
+					right_after_status = 1;
+				nextMode = 1;
+				timeOut = TIME_OUT;
+			}
 		}
 	}
 	if ( mode == 1 && spGetInput()->button[SP_BUTTON_X_NOWASD] )
 	{
 		 spGetInput()->button[SP_BUTTON_X_NOWASD] = 0;
 		 askMode = 1;
-	}
-	if ( spGetInput()->button[SP_BUTTON_START_NOWASD] )
-	{
-		spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
-		if (mode == 0)
-		{
-			profile = spNetC4ACreateProfile(longName,shortName,password,mail);
-			mode = 1;
-		}
-		else
-			spNetC4AEditProfile(profile,longName,shortName,password,mail);
 	}
 	return 0;
 }
