@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Sparrow C4A Manager
-Comment=An alternative C4A profile manager
+Name=Sp. C4A Manager
+Comment=Sparrow Compo4all Manager
 Exec=Sparrow-C4A-Manager.sh
 Terminal=false
 Type=Application

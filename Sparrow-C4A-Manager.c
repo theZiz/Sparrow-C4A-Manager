@@ -220,6 +220,7 @@ int calc(Uint32 steps)
 			SDL_KillThread(thread);
 			right_after_status = 0;
 			askMode = 6;
+			spStopKeyboardInput();
 		}
 		else
 			return 0;
@@ -231,7 +232,11 @@ int calc(Uint32 steps)
 		if (result == 0)
 			mode = nextMode;
 		else
+		{
 			askMode = 6;
+			spStopKeyboardInput();
+		}
+			
 	}
 	right_after_status = 0;
 	switch ( askMode )
@@ -250,18 +255,39 @@ int calc(Uint32 steps)
 				sprintf(password,"");
 				sprintf(mail,"");
 				askMode = 0;
+				switch (line)
+				{
+					case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+				}
 			}
-			if ( spGetInput()->button[SP_BUTTON_X_NOWASD] )
+			if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
 			{
-				spGetInput()->button[SP_BUTTON_X_NOWASD] = 0;
+				spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;
 				askMode = 0;
+				switch (line)
+				{
+					case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+				}
 			}
 			break;
 		case 2: case 3: case 4: case 5: case 6:
-			if ( spGetInput()->button[SP_BUTTON_B_NOWASD] )
+			if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
 			{
-				spGetInput()->button[SP_BUTTON_B_NOWASD] = 0;
+				spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
 				askMode = 0;
+				switch (line)
+				{
+					case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+				}
 			}
 			break;
 	}
@@ -282,10 +308,10 @@ int calc(Uint32 steps)
 		blink = 0;
 		switch (line)
 		{
-			case 0: spPollKeyboardInput(shortName,3,SP_BUTTON_B_NOWASD_MASK); break;
-			case 1: spPollKeyboardInput(longName,256,SP_BUTTON_B_NOWASD_MASK); break;
-			case 2: spPollKeyboardInput(password,256,SP_BUTTON_B_NOWASD_MASK); break;
-			case 3: spPollKeyboardInput(mail,256,SP_BUTTON_B_NOWASD_MASK); break;
+			case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
+			case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+			case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+			case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
 		}
 	}
 	if ( spGetInput()->button[SP_BUTTON_L_NOWASD])
@@ -295,26 +321,38 @@ int calc(Uint32 steps)
 		blink = 0;
 		switch (line)
 		{
-			case 0: spPollKeyboardInput(shortName,3,SP_BUTTON_B_NOWASD_MASK); break;
-			case 1: spPollKeyboardInput(longName,256,SP_BUTTON_B_NOWASD_MASK); break;
-			case 2: spPollKeyboardInput(password,256,SP_BUTTON_B_NOWASD_MASK); break;
-			case 3: spPollKeyboardInput(mail,256,SP_BUTTON_B_NOWASD_MASK); break;
+			case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
+			case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+			case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+			case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
 		}
 	}
 	if ( spGetInput()->button[SP_BUTTON_START_NOWASD] )
 	{
 		spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
 		if (check_shortname())
+		{
 			askMode = 2;
+			spStopKeyboardInput();
+		}
 		else
 		if (check_longname())
+		{
 			askMode = 3;
+			spStopKeyboardInput();
+		}
 		else
 		if (check_password())
+		{
 			askMode = 4;
+			spStopKeyboardInput();
+		}
 		else
 		if (check_mail())
+		{
 			askMode = 5;
+			spStopKeyboardInput();
+		}
 		else
 		{
 			if (mode == 0)
@@ -335,10 +373,11 @@ int calc(Uint32 steps)
 			}
 		}
 	}
-	if ( mode == 1 && spGetInput()->button[SP_BUTTON_X_NOWASD] )
+	if ( mode == 1 && spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
 	{
-		 spGetInput()->button[SP_BUTTON_X_NOWASD] = 0;
+		 spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;
 		 askMode = 1;
+		 spStopKeyboardInput();
 	}
 	return 0;
 }
@@ -365,10 +404,8 @@ void resize(Uint16 w,Uint16 h)
 	spFontAdd(font,SP_FONT_GROUP_ASCII,65535);//whole ASCII
 	spFontAddBorder(font,BACKGROUND_COLOR);
 	spFontMulWidth(font,15<<SP_ACCURACY-4);
-	spFontAddButton( font, 'A', SP_BUTTON_LEFT_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
-	spFontAddButton( font, 'B', SP_BUTTON_RIGHT_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
-	spFontAddButton( font, 'X', SP_BUTTON_DOWN_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
-	spFontAddButton( font, 'Y', SP_BUTTON_UP_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font, 'B', SP_PRACTICE_OK_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font, 'X', SP_PRACTICE_CANCEL_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 	spFontAddButton( font, 'L', SP_BUTTON_L_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 	spFontAddButton( font, 'R', SP_BUTTON_R_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 	spFontAddButton( font, 'S', SP_BUTTON_START_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
@@ -381,10 +418,8 @@ void resize(Uint16 w,Uint16 h)
 	spFontAdd(font_small,SP_FONT_GROUP_ASCII,spGetRGB(192,192,192));//whole ASCII
 	spFontAddBorder(font_small,BACKGROUND_COLOR);
 	spFontMulWidth(font_small,15<<SP_ACCURACY-4);
-	spFontAddButton( font_small, 'A', SP_BUTTON_LEFT_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
-	spFontAddButton( font_small, 'B', SP_BUTTON_RIGHT_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
-	spFontAddButton( font_small, 'X', SP_BUTTON_DOWN_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
-	spFontAddButton( font_small, 'Y', SP_BUTTON_UP_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font_small, 'B', SP_PRACTICE_OK_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font_small, 'X', SP_PRACTICE_CANCEL_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 	spFontAddButton( font_small, 'L', SP_BUTTON_L_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 	spFontAddButton( font_small, 'R', SP_BUTTON_R_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 	spFontAddButton( font_small, 'S', SP_BUTTON_START_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
@@ -405,7 +440,7 @@ int main(int argc, char **argv)
 	spSetZTest(0);
 	banner = spLoadSurface("images/banner.png");
 
-	spPollKeyboardInput(shortName,3,SP_BUTTON_B_NOWASD_MASK);
+	spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK);
 	
 	profile = spNetC4AGetProfile();
 	if (profile)
