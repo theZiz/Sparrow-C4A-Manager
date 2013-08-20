@@ -1,6 +1,6 @@
 #!/bin/sh
 # Change the folder to YOUR sparrow3d folder!
-PROGRAM="mini-c4a"
+PROGRAM="Sparrow-C4A-Manager"
 VERSION="1.0.0.0"
 DEST=./build/*
 echo "<html>" > index.htm
@@ -16,9 +16,6 @@ do
     echo "--> Copy temporary folders"
     cp -r font "$f/$PROGRAM"
     cp -r images "$f/$PROGRAM"
-    cp -r music "$f/$PROGRAM"
-    cp -r sounds "$f/$PROGRAM"
-    cp -r translations "$f/$PROGRAM"
     cp README.md "$f/$PROGRAM"
     cd $f
     echo "--> Create archive"
@@ -41,9 +38,6 @@ do
     echo "--> Remove temporary folders"
     rm -r $PROGRAM/font
     rm -r $PROGRAM/images
-    rm -r $PROGRAM/music
-    rm -r $PROGRAM/sounds
-    rm -r $PROGRAM/translations
     rm $PROGRAM/README.md
     cd ..
     cd ..

@@ -28,6 +28,7 @@
     <version major="1" minor="0" release="0" build="0"/>
     <osversion major="1" minor="0" release="0" build="0"/>
     <description lang="en_US">An alternatie manager for Compo4all profiles.</description>
+    <info name="README" type="text/plain" src="README.md"/>
     <icon src="./Sparrow-C4A-Manager.png"/>
     <previewpics>
       <pic src="previews/screenshot.png"/>
