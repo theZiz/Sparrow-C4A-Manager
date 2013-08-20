@@ -1,6 +1,0 @@
-#!/bin/sh
-cd `dirname $0`
-
-LD_LIBRARY_PATH=. ./mini-c4a 2>&1 >mini-c4a.log
-
-cd /usr/gp2x; ./gp2xmenu

@@ -48,7 +48,7 @@ SDL_Thread* thread = NULL;
 void draw( void )
 {
 	spClearTarget( BACKGROUND_COLOR );
-	spRotozoomSurface( screen->w/6, 3*screen->h/36+spFixedToInt(banner->h*spGetSizeFactor()/4)/2+2, 0, banner, spGetSizeFactor()/4, spGetSizeFactor()/4,0);
+	spRotozoomSurface( screen->w/6, 2*screen->h/36+spFixedToInt(banner->h*spGetSizeFactor()/4)/2+2, 0, banner, spGetSizeFactor()/4, spGetSizeFactor()/4,0);
 	spFontDrawRight( screen->w-2, 2, 0, "[E] Exit", font_small );
 	spFontDrawMiddle( screen->w/2, 2, 0, "[B] Enter letter", font_small );
 	spFontDraw( 2, 2, 0, "[L] & [R] Row", font_small );
@@ -76,24 +76,24 @@ void draw( void )
 	spLine( 2*screen->w/3 + spFontWidth(mom_line,font)/2+1, (line*2+6)*screen->h/18, 0,
 	        2*screen->w/3 + spFontWidth(mom_line,font)/2+1, (line*2+7)*screen->h/18, 0, ((blink/512)&1)?0:65535);
 	
-	spFontDrawRight( screen->w/3, 3*screen->h/9, 0, "3 Letter Nick: ", font);
+	spFontDrawRight( screen->w/3, 3*screen->h/9, 0, "3 Letter Nick:", font);
 	spFontDrawMiddle( 2*screen->w/3, 3*screen->h/9, 0, shortName, font);
-	spLine( screen->w/3+2, 7*screen->h/18, 0, screen->w-2, 7*screen->h/18,0,65535);
+	spLine( screen->w/3+10, 7*screen->h/18, 0, screen->w-10, 7*screen->h/18,0,65535);
 	spFontDrawMiddle( 2*screen->w/3, 7*screen->h/18, 0, "(e.g. EVD)", font_small);
 
-	spFontDrawRight( screen->w/3, 4*screen->h/9, 0, "Display Nick: ", font);
+	spFontDrawRight( screen->w/3, 4*screen->h/9, 0, "Display Nick:", font);
 	spFontDrawMiddle( 2*screen->w/3, 4*screen->h/9, 0, longName, font);
-	spLine( screen->w/3+2, 9*screen->h/18, 0, screen->w-2, 9*screen->h/18,0,65535);
+	spLine( screen->w/3+10, 9*screen->h/18, 0, screen->w-10, 9*screen->h/18,0,65535);
 	spFontDrawMiddle( 2*screen->w/3, 9*screen->h/18, 0, "(e.g. EvilDragon)", font_small);
 
-	spFontDrawRight( screen->w/3, 5*screen->h/9, 0, "Password: ", font);
+	spFontDrawRight( screen->w/3, 5*screen->h/9, 0, "Password:", font);
 	spFontDrawMiddle( 2*screen->w/3, 5*screen->h/9, 0, password, font);
-	spLine( screen->w/3+2, 11*screen->h/18, 0, screen->w-2, 11*screen->h/18,0,65535);
+	spLine( screen->w/3+10, 11*screen->h/18, 0, screen->w-10, 11*screen->h/18,0,65535);
 	spFontDrawMiddle( 2*screen->w/3, 11*screen->h/18, 0, "(alphanumeric, e.g. aBc123)", font_small);
 
-	spFontDrawRight( screen->w/3, 6*screen->h/9, 0, "E-Mail address: ", font);
+	spFontDrawRight( screen->w/3, 6*screen->h/9, 0, "E-Mail address:", font);
 	spFontDrawMiddle( 2*screen->w/3, 6*screen->h/9, 0, mail, font);
-	spLine( screen->w/3+2, 13*screen->h/18, 0, screen->w-2, 13*screen->h/18,0,65535);
+	spLine( screen->w/3+10, 13*screen->h/18, 0, screen->w-10, 13*screen->h/18,0,65535);
 	spFontDrawMiddle( 2*screen->w/3, 13*screen->h/18, 0, "(for score being beaten notification)", font_small);
 	if (spIsKeyboardPolled() && spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)
 		spBlitSurface(screen->w/2,screen->h-spGetVirtualKeyboard()->h/2,0,spGetVirtualKeyboard());
@@ -347,12 +347,12 @@ void resize(Uint16 w,Uint16 h)
 {
 	//Settings up the onboard keyboard:
 	if (spGetSizeFactor() <= SP_ONE)
-		spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_ALWAYS,0,h-w*48/320,w,w*48/320,spLoadSurface("./images/keyboard320.png"),spLoadSurface("./images/keyboardShift320.png"));
+		spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_IF_NEEDED,0,h-w*48/320,w,w*48/320,spLoadSurface("./images/keyboard320.png"),spLoadSurface("./images/keyboardShift320.png"));
 	else
 	if (spGetSizeFactor() <= 2*SP_ONE)
-		spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_ALWAYS,0,h-w*48/320,w,w*48/320,spLoadSurface("./images/keyboard640.png"),spLoadSurface("./images/keyboardShift640.png"));
+		spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_IF_NEEDED,0,h-w*48/320,w,w*48/320,spLoadSurface("./images/keyboard640.png"),spLoadSurface("./images/keyboardShift640.png"));
 	else
-		spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_ALWAYS,0,h-w*48/320,w,w*48/320,spLoadSurface("./images/keyboard1280.png"),spLoadSurface("./images/keyboardShift1280.png"));
+		spSetVirtualKeyboard(SP_VIRTUAL_KEYBOARD_IF_NEEDED,0,h-w*48/320,w,w*48/320,spLoadSurface("./images/keyboard1280.png"),spLoadSurface("./images/keyboardShift1280.png"));
   //Setup of the new/resized window
   spSelectRenderTarget(spGetWindowSurface());
 	spFontShadeButtons(1);
@@ -394,6 +394,7 @@ void resize(Uint16 w,Uint16 h)
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
+	spSetDefaultWindowSize(800,480);
 	spInitCore();
 	spSetAffineTextureHack(0); //We don't need it :)
 	spInitMath();
