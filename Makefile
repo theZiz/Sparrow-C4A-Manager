@@ -12,7 +12,7 @@ SPARROW_FOLDER = ../sparrow3d
 
 ifdef TARGET
 include $(SPARROW_FOLDER)/target-files/$(TARGET).mk
-BUILD = ./build/$(TARGET)/mini-c4a
+BUILD = ./build/$(TARGET)/Sparrow-C4A-Manager
 SPARROW_LIB = $(SPARROW_FOLDER)/build/$(TARGET)/sparrow3d
 else
 TARGET = "Default (change with make TARGET=otherTarget. See All targets with make targets)"
@@ -23,21 +23,21 @@ LIB += -L$(SPARROW_LIB)
 INCLUDE += -I$(SPARROW_FOLDER)
 DYNAMIC += -lsparrow3d -lsparrowNet
 
-all: mini-c4a
+all: Sparrow-C4A-Manager
 	@echo "=== Built for Target "$(TARGET)" ==="
 
 targets:
 	@echo "The targets are the same like for sparrow3d. :P"
 
-mini-c4a: mini-c4a.c makeBuildDir
+Sparrow-C4A-Manager: Sparrow-C4A-Manager.c makeBuildDir
 	cp $(SPARROW_LIB)/libsparrow3d.so $(BUILD)
 	cp $(SPARROW_LIB)/libsparrowNet.so $(BUILD)
-	$(CPP) $(CFLAGS) mini-c4a.c $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/mini-c4a
+	$(CPP) $(CFLAGS) Sparrow-C4A-Manager.c $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/Sparrow-C4A-Manager
 
 makeBuildDir:
-	 @if [ ! -d $(BUILD:/mini-c4a=/) ]; then mkdir $(BUILD:/mini-c4a=/);fi
+	 @if [ ! -d $(BUILD:/Sparrow-C4A-Manager=/) ]; then mkdir $(BUILD:/Sparrow-C4A-Manager=/);fi
 	 @if [ ! -d $(BUILD) ]; then mkdir $(BUILD);fi
 
 clean:
 	rm -f *.o
-	rm -f mini-c4a
+	rm -f Sparrow-C4A-Manager
