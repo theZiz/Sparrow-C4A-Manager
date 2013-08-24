@@ -30,7 +30,7 @@ spFontPointer font = NULL;
 spFontPointer font_small = NULL;
 SDL_Surface* banner;
 
-#define TIME_OUT 10000
+#define TIME_OUT 15000
 
 int mode = 0; //0 no prof file found, 1 profile file exists
 int nextMode = 0;
@@ -77,12 +77,12 @@ void draw( void )
 	spFontDrawRight( screen->w/3, 3*screen->h/9, 0, "3 Letter Nick:", font);
 	spFontDrawMiddle( 2*screen->w/3, 3*screen->h/9, 0, shortName, font);
 	spLine( screen->w/3+10, 7*screen->h/18, 0, screen->w-10, 7*screen->h/18,0,65535);
-	spFontDrawMiddle( 2*screen->w/3, 7*screen->h/18, 0, "(e.g. EVD)", font_small);
+	spFontDrawMiddle( 2*screen->w/3, 7*screen->h/18, 0, "(e.g. JHN)", font_small);
 
 	spFontDrawRight( screen->w/3, 4*screen->h/9, 0, "Display Nick:", font);
 	spFontDrawMiddle( 2*screen->w/3, 4*screen->h/9, 0, longName, font);
 	spLine( screen->w/3+10, 9*screen->h/18, 0, screen->w-10, 9*screen->h/18,0,65535);
-	spFontDrawMiddle( 2*screen->w/3, 9*screen->h/18, 0, "(e.g. EvilDragon)", font_small);
+	spFontDrawMiddle( 2*screen->w/3, 9*screen->h/18, 0, "(e.g. JohnSmith)", font_small);
 
 	spFontDrawRight( screen->w/3, 5*screen->h/9, 0, "Password:", font);
 	spFontDrawMiddle( 2*screen->w/3, 5*screen->h/9, 0, password, font);
@@ -126,6 +126,21 @@ void draw( void )
 		case 6:
 			spInterpolateTargetToColor(0,3*SP_ONE/4);
 			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Couldn't connect to Server! Check your connection.", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
+			break;
+		case 7:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Account created successfully", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
+			break;
+		case 8:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Account edited successfully", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
+			break;
+		case 9:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Account deleted successfully", font);
 			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
 			break;
 	}	
@@ -203,6 +218,7 @@ int check_mail()
 }
 
 int right_after_status = 0;
+int last_task = 0;
 
 int calc(Uint32 steps)
 {
@@ -217,7 +233,10 @@ int calc(Uint32 steps)
 	if (right_after_status)
 	{
 		if (spNetC4AGetTaskResult() == 0)
+		{
 			mode = nextMode;
+			askMode = last_task+7;
+		}
 		else
 		{
 			askMode = 6;
@@ -233,7 +252,10 @@ int calc(Uint32 steps)
 			{
 				spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
 				if (spNetC4ADeleteAccount(&profile,1,TIME_OUT) == 0)
+				{
 					right_after_status = 1;
+					last_task = 2;
+				}
 				nextMode = 0;
 				sprintf(longName,"");
 				sprintf(shortName,"");
@@ -261,7 +283,7 @@ int calc(Uint32 steps)
 				}
 			}
 			break;
-		case 2: case 3: case 4: case 5: case 6:
+		default:
 			if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
 			{
 				spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
@@ -274,7 +296,6 @@ int calc(Uint32 steps)
 					case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
 				}
 			}
-			break;
 	}
 	if (askMode)
 		return 0;
@@ -343,13 +364,19 @@ int calc(Uint32 steps)
 			if (mode == 0)
 			{
 				if (spNetC4ACreateProfile(&profile,longName,shortName,password,mail,TIME_OUT) == 0)
+				{
 					right_after_status = 1;
+					last_task = 0;
+				}
 				nextMode = 1;
 			}
 			else
 			{
 				if (spNetC4AEditProfile(&profile,longName,shortName,password,mail,TIME_OUT) == 0)
+				{
 					right_after_status = 1;
+					last_task = 1;
+				}
 				nextMode = 1;
 			}
 		}
