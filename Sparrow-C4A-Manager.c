@@ -30,11 +30,10 @@ spFontPointer font = NULL;
 spFontPointer font_small = NULL;
 SDL_Surface* banner;
 
-#define TIME_OUT 10000
+#define TIME_OUT 15000
 
 int mode = 0; //0 no prof file found, 1 profile file exists
 int nextMode = 0;
-int timeOut = 0;
 int askMode = 0;
 int line = 0;
 char shortName[4] = "";
@@ -43,7 +42,6 @@ char password[256] = "";
 char mail[256] = "";
 int blink = 0;
 spNetC4AProfilePointer profile;
-SDL_Thread* thread = NULL;
 
 void draw( void )
 {
@@ -79,12 +77,12 @@ void draw( void )
 	spFontDrawRight( screen->w/3, 3*screen->h/9, 0, "3 Letter Nick:", font);
 	spFontDrawMiddle( 2*screen->w/3, 3*screen->h/9, 0, shortName, font);
 	spLine( screen->w/3+10, 7*screen->h/18, 0, screen->w-10, 7*screen->h/18,0,65535);
-	spFontDrawMiddle( 2*screen->w/3, 7*screen->h/18, 0, "(e.g. EVD)", font_small);
+	spFontDrawMiddle( 2*screen->w/3, 7*screen->h/18, 0, "(e.g. JHN)", font_small);
 
 	spFontDrawRight( screen->w/3, 4*screen->h/9, 0, "Display Nick:", font);
 	spFontDrawMiddle( 2*screen->w/3, 4*screen->h/9, 0, longName, font);
 	spLine( screen->w/3+10, 9*screen->h/18, 0, screen->w-10, 9*screen->h/18,0,65535);
-	spFontDrawMiddle( 2*screen->w/3, 9*screen->h/18, 0, "(e.g. EvilDragon)", font_small);
+	spFontDrawMiddle( 2*screen->w/3, 9*screen->h/18, 0, "(e.g. JohnSmith)", font_small);
 
 	spFontDrawRight( screen->w/3, 5*screen->h/9, 0, "Password:", font);
 	spFontDrawMiddle( 2*screen->w/3, 5*screen->h/9, 0, password, font);
@@ -130,13 +128,28 @@ void draw( void )
 			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Couldn't connect to Server! Check your connection.", font);
 			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
 			break;
+		case 7:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Account created successfully", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
+			break;
+		case 8:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Account edited successfully", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
+			break;
+		case 9:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Account deleted successfully", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Ok", font);
+			break;
 	}	
 	if (spNetC4AGetStatus() > 0)
 	{
 		spInterpolateTargetToColor(0,3*SP_ONE/4);
 		spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Connecting to server...", font);
 		char buffer[256];
-		sprintf(buffer,"Timeout in %i.%i",timeOut/1000,(timeOut/100)%10);
+		sprintf(buffer,"Timeout in %i.%i",spNetC4AGetTimeOut()/1000,(spNetC4AGetTimeOut()/100)%10);
 		spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, buffer, font);
 	}		
 	spFlip();
@@ -205,6 +218,7 @@ int check_mail()
 }
 
 int right_after_status = 0;
+int last_task = 0;
 
 int calc(Uint32 steps)
 {
@@ -214,23 +228,15 @@ int calc(Uint32 steps)
 	if (spNetC4AGetStatus() > 0)
 	{
 		right_after_status = 1;
-		timeOut-=steps;
-		if (timeOut <= 0)
-		{
-			SDL_KillThread(thread);
-			right_after_status = 0;
-			askMode = 6;
-			spStopKeyboardInput();
-		}
-		else
-			return 0;
+		return 0;
 	}
 	if (right_after_status)
 	{
-		int result;
-		SDL_WaitThread(thread,&result);
-		if (result == 0)
+		if (spNetC4AGetTaskResult() == 0)
+		{
 			mode = nextMode;
+			askMode = last_task+7;
+		}
 		else
 		{
 			askMode = 6;
@@ -245,11 +251,12 @@ int calc(Uint32 steps)
 			if ( spGetInput()->button[SP_BUTTON_START_NOWASD] )
 			{
 				spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
-				thread = spNetC4ADeleteAccount(&profile,1);
-				if (thread)
+				if (spNetC4ADeleteAccount(&profile,1,TIME_OUT) == 0)
+				{
 					right_after_status = 1;
+					last_task = 2;
+				}
 				nextMode = 0;
-				timeOut = TIME_OUT;
 				sprintf(longName,"");
 				sprintf(shortName,"");
 				sprintf(password,"");
@@ -276,7 +283,7 @@ int calc(Uint32 steps)
 				}
 			}
 			break;
-		case 2: case 3: case 4: case 5: case 6:
+		default:
 			if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
 			{
 				spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
@@ -289,7 +296,6 @@ int calc(Uint32 steps)
 					case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
 				}
 			}
-			break;
 	}
 	if (askMode)
 		return 0;
@@ -357,19 +363,21 @@ int calc(Uint32 steps)
 		{
 			if (mode == 0)
 			{
-				thread = spNetC4ACreateProfile(&profile,longName,shortName,password,mail);
-				if (thread)
+				if (spNetC4ACreateProfile(&profile,longName,shortName,password,mail,TIME_OUT) == 0)
+				{
 					right_after_status = 1;
+					last_task = 0;
+				}
 				nextMode = 1;
-				timeOut = TIME_OUT;
 			}
 			else
 			{
-				thread = spNetC4AEditProfile(&profile,longName,shortName,password,mail);
-				if (thread)
+				if (spNetC4AEditProfile(&profile,longName,shortName,password,mail,TIME_OUT) == 0)
+				{
 					right_after_status = 1;
+					last_task = 1;
+				}
 				nextMode = 1;
-				timeOut = TIME_OUT;
 			}
 		}
 	}
