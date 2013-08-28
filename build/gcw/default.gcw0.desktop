@@ -6,4 +6,4 @@ Terminal=false
 Type=Application
 StartupNotify=true
 Icon=Sparrow-C4A-Manager
-Categories=games;
+Categories=settings;
