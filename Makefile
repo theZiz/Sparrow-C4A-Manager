@@ -29,14 +29,20 @@ all: Sparrow-C4A-Manager
 targets:
 	@echo "The targets are the same like for sparrow3d. :P"
 
-Sparrow-C4A-Manager: Sparrow-C4A-Manager.c makeBuildDir
+Sparrow-C4A-Manager: Sparrow-C4A-Manager.c account.o menu.o defines.h makeBuildDir
 	cp $(SPARROW_LIB)/libsparrow3d.so $(BUILD)
 	cp $(SPARROW_LIB)/libsparrowNet.so $(BUILD)
-	$(CPP) $(CFLAGS) Sparrow-C4A-Manager.c $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/Sparrow-C4A-Manager
+	$(CPP) $(CFLAGS) Sparrow-C4A-Manager.c account.o menu.o $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/Sparrow-C4A-Manager
 
 makeBuildDir:
 	 @if [ ! -d $(BUILD:/Sparrow-C4A-Manager=/) ]; then mkdir $(BUILD:/Sparrow-C4A-Manager=/);fi
 	 @if [ ! -d $(BUILD) ]; then mkdir $(BUILD);fi
+
+account.o: account.c account.h defines.h
+	$(CPP) $(CFLAGS) -c account.c $(SDL) $(INCLUDE)
+
+menu.o: menu.c menu.h defines.h
+	$(CPP) $(CFLAGS) -c menu.c $(SDL) $(INCLUDE)
 
 clean:
 	rm -f *.o
