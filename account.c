@@ -33,7 +33,8 @@ void draw_account(spFontPointer font,spFontPointer font_small)
 {
 	SDL_Surface* screen = spGetWindowSurface();
 	spFontDrawRight( screen->w-2, 2, 0, "[E] Back", font_small );
-	spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_small );
+	if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)	
+		spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_small );
 	spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_small );
 	switch (mode)
 	{

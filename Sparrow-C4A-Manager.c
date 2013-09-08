@@ -135,7 +135,7 @@ void resize(Uint16 w,Uint16 h)
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
-	spSetDefaultWindowSize(800,480);
+	//spSetDefaultWindowSize(800,480);
 	spInitCore();
 	spSetAffineTextureHack(0); //We don't need it :)
 	spInitMath();
