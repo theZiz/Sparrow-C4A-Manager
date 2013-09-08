@@ -53,11 +53,11 @@ void draw_menu(spFontPointer font,spFontPointer font_small)
 	spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter menu point", font_small );
 	spFontDraw( 2, 2, 0, SP_PAD_NAME": Select menu point", font_small );
 	
-	draw_middle_with_border( screen->w/2, screen->h*6/9, 0, "Account Management", font, 0);
-	draw_middle_with_border( screen->w/2, screen->h*7/9, 0, "Online Highscores", font, 1);
-	draw_middle_with_border( screen->w/2, screen->h*8/9, 0, "Exit", font, 2);
+	draw_middle_with_border( screen->w*2/3, screen->h*1/8, 0, "Account Management", font, 0);
+	draw_middle_with_border( screen->w*2/3, screen->h*2/8, 0, "Online Highscores", font, 1);
+	draw_middle_with_border( screen->w*2/3, screen->h*3/8, 0, "Exit", font, 2);
 	
-	spFontDrawTextBlock(middle,5,screen->h*3/9,0,help,spGetWindowSurface()->h,0,font_small);
+	spFontDrawTextBlock(middle,5,screen->h*4/8,0,help,spGetWindowSurface()->h,0,font_small);
 }
 
 int calc_menu(Uint32 steps)

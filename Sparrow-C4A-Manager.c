@@ -36,11 +36,17 @@ stateEnum state = menu;
 void draw( void )
 {
 	spClearTarget( BACKGROUND_COLOR );
-	spRotozoomSurface( screen->w/6, 2*screen->h/36+spFixedToInt(banner->h*spGetSizeFactor()/4)/2+2, 0, banner, spGetSizeFactor()/4, spGetSizeFactor()/4,0);
 	switch (state)
 	{
-		case menu: draw_menu(font,font_small); break;
-		case account: draw_account(font,font_small); break;
+		case menu:
+			spRotozoomSurface( screen->w/6, 2*screen->h/36+spFixedToInt(banner->h*spGetSizeFactor()/4)/2+2, 0, banner, spGetSizeFactor()/4, spGetSizeFactor()/4,0);
+			draw_menu(font,font_small);
+			break;
+		case account:
+			spRotozoomSurface( screen->w/6, 2*screen->h/36+spFixedToInt(banner->h*spGetSizeFactor()/4)/2+2, 0, banner, spGetSizeFactor()/4, spGetSizeFactor()/4,0);
+			draw_account(font,font_small);
+			break;
+		case highscore: draw_highscore(font,font_small); break;
 	}
 	spFlip();
 }
@@ -56,6 +62,10 @@ int calc(Uint32 steps)
 					state = account;
 					start_account();
 					break;
+				case 2:
+					state = highscore;
+					start_highscore();
+					break;
 				case -1:
 					return 1;
 			}
@@ -64,6 +74,13 @@ int calc(Uint32 steps)
 			if (calc_account(steps) != 0)
 			{
 				finish_account();
+				state = menu;
+			}
+			break;
+		case highscore:
+			if (calc_highscore(steps) != 0)
+			{
+				finish_highscore();
 				state = menu;
 			}
 			break;

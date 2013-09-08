@@ -23,8 +23,8 @@
 #define FONT_SIZE_SMALL 10
 #define BACKGROUND_COLOR spGetRGB(48,0,48)
 #define TIME_OUT 15000
-#define BORDER_SIZE 3
-#define BORDER_DISTANCE 8
+#define BORDER_SIZE 2
+#define BORDER_DISTANCE 5
 #define BORDER_COLOR spGetRGB(230,230,230)
 
 #endif
