@@ -49,7 +49,7 @@ void draw_middle_with_border(int x,int y,int z,char* text_,spFontPointer font,in
 void draw_menu(spFontPointer font,spFontPointer font_small)
 {
 	SDL_Surface* screen = spGetWindowSurface();
-	spFontDrawRight( screen->w-2, 2, 0, "[E] Exit", font_small );
+	spFontDrawRight( screen->w-2, 2, 0, "[X] Exit", font_small );
 	spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter menu point", font_small );
 	spFontDraw( 2, 2, 0, SP_PAD_NAME": Select menu point", font_small );
 	
@@ -62,7 +62,7 @@ void draw_menu(spFontPointer font,spFontPointer font_small)
 
 int calc_menu(Uint32 steps)
 {
-	if ( spGetInput()->button[SP_BUTTON_SELECT_NOWASD] )
+	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
 		return -1;
 	if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
 	{

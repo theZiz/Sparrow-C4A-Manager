@@ -32,7 +32,7 @@ spNetC4AProfilePointer profile;
 void draw_account(spFontPointer font,spFontPointer font_small)
 {
 	SDL_Surface* screen = spGetWindowSurface();
-	spFontDrawRight( screen->w-2, 2, 0, "[E] Back", font_small );
+	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_small );
 	if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)	
 		spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_small );
 	if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)
@@ -48,7 +48,7 @@ void draw_account(spFontPointer font,spFontPointer font_small)
 		case 1:
 			spFontDrawMiddle( 2*screen->w/3, 1*screen->h/9, 0, ">>> Account Editing <<<", font);
 			spFontDrawMiddle( 2*screen->w/3, 2*screen->h/11, 0, "Press [S] to edit the account", font_small);
-			spFontDrawMiddle( 2*screen->w/3, 2*screen->h/8, 0, "Press [X] to delete the account", font_small);
+			spFontDrawMiddle( 2*screen->w/3, 2*screen->h/8, 0, "Press [E] to delete the account", font_small);
 			break;		
 	}
 	
@@ -210,12 +210,6 @@ int last_task = 0;
 
 int calc_account(Uint32 steps)
 {
-	if ( spGetInput()->button[SP_BUTTON_SELECT_NOWASD] )
-	{
-		spGetInput()->button[SP_BUTTON_SELECT_NOWASD] = 0;
-		spStopKeyboardInput();
-		return 1;
-	}
 	blink+=steps;
 	if (spNetC4AGetStatus() > 0)
 	{
@@ -291,6 +285,12 @@ int calc_account(Uint32 steps)
 	}
 	if (askMode)
 		return 0;
+	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
+	{
+		spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;
+		spStopKeyboardInput();
+		return 1;
+	}
 	
 	int i;
 	for (i = 0; shortName[i] != 0; i++)
@@ -379,9 +379,9 @@ int calc_account(Uint32 steps)
 			}
 		}
 	}
-	if ( mode == 1 && spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
+	if ( mode == 1 && spGetInput()->button[SP_BUTTON_SELECT_NOWASD] )
 	{
-		 spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;
+		 spGetInput()->button[SP_BUTTON_SELECT_NOWASD] = 0;
 		 askMode = 1;
 		 spStopKeyboardInput();
 	}

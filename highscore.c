@@ -96,12 +96,17 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 	if (showScore == 0)
 	{
 		if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)	
+		{
 			spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_small );
-		if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)
+			spFontDrawMiddle( screen->w/5, screen->h/9, 0, "[S] View Highscore", font_small);
 			spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_small );
+		}
 		else
+		{
+			spFontDrawMiddle( screen->w/5, screen->h/9, 0, "[B] View Highscore", font_small);
 			spFontDraw( 2, 2, 0, SP_PAD_NAME": Select Row", font_small );
-		spFontDrawMiddle( screen->w/5, screen->h/9, 0, "[S] View Highscore", font_small);
+		}
+		
 		spFontDrawRight( screen->w/2, 1*screen->h/9, 0, "Filter:", font);
 		spFontDrawMiddle( 3*screen->w/4, 1*screen->h/9, 0, filter, font);
 		spLine( screen->w/2+10, 3*screen->h/18, 0, screen->w-10, 3*screen->h/18,0,65535);
@@ -157,7 +162,7 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 		spFontDrawMiddle( screen->w/2, screen->h/9, 0, buffer, font );
 		spFontDraw( 2, 2, 0, SP_PAD_NAME": Scroll", font_small );
 	}
-	spFontDrawRight( screen->w-2, 2, 0, "[E] Back", font_small );
+	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_small );
 
 
 
@@ -243,9 +248,9 @@ int calc_highscore(Uint32 steps)
 	}
 	right_after_task = 0;
 
-	if ( spGetInput()->button[SP_BUTTON_SELECT_NOWASD] )
+	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
 	{
-		spGetInput()->button[SP_BUTTON_SELECT_NOWASD] = 0;
+		spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;
 		if (showScore == 0)
 		{
 			spStopKeyboardInput();
@@ -282,13 +287,13 @@ int calc_highscore(Uint32 steps)
 
 	if ( showScore )
 	{
-		if ( spGetInput()->axis[1] > 0)
+		if ( spGetInput()->button[SP_BUTTON_R_NOWASD] || spGetInput()->axis[1] > 0)
 		{
 			scorePosition+=steps*1024;
-			if (spFixedToInt(scorePosition) > scoreCount-1)
-				scorePosition = spIntToFixed(scoreCount-1)+SP_ONE-1;
+			if (spFixedToInt(scorePosition) > scoreCount-2)
+				scorePosition = spIntToFixed(scoreCount-2)+SP_ONE-1;
 		}
-		if ( spGetInput()->axis[1] < 0)
+		if ( spGetInput()->button[SP_BUTTON_L_NOWASD] || spGetInput()->axis[1] < 0)
 		{
 			scorePosition-=steps*1024;
 			if (spFixedToInt(scorePosition) <0)
@@ -304,7 +309,8 @@ int calc_highscore(Uint32 steps)
 				filter[i] += 'A'-'a';
 		}
 
-		if (selectedGame && spGetInput()->button[SP_BUTTON_START_NOWASD])
+		if (selectedGame && (spGetInput()->button[SP_BUTTON_START_NOWASD] ||
+		   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->button[SP_PRACTICE_OK_NOWASD])))
 		{
 			spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
 			spStopKeyboardInput();
