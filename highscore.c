@@ -97,7 +97,10 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 	{
 		if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)	
 			spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_small );
-		spFontDraw( 2, 2, 0, "[L] & [R]: Select Game", font_small );
+		if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)
+			spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_small );
+		else
+			spFontDraw( 2, 2, 0, SP_PAD_NAME": Select Row", font_small );
 		spFontDrawMiddle( screen->w/5, screen->h/9, 0, "[S] View Highscore", font_small);
 		spFontDrawRight( screen->w/2, 1*screen->h/9, 0, "Filter:", font);
 		spFontDrawMiddle( 3*screen->w/4, 1*screen->h/9, 0, filter, font);
@@ -311,7 +314,8 @@ int calc_highscore(Uint32 steps)
 		
 		if (r_pressed)
 			r_time -= steps;
-		if (spGetInput()->button[SP_BUTTON_R_NOWASD])
+		if (spGetInput()->button[SP_BUTTON_R_NOWASD] ||
+		   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] > 0))
 		{
 			if ( (!r_pressed) ||
 				 ( r_pressed && r_time<0))
@@ -333,7 +337,8 @@ int calc_highscore(Uint32 steps)
 		
 		if (l_pressed)
 			l_time -= steps;
-		if (spGetInput()->button[SP_BUTTON_L_NOWASD])
+		if (spGetInput()->button[SP_BUTTON_L_NOWASD] ||
+		   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] < 0))
 		{
 			if ( (!l_pressed) ||
 				 ( l_pressed && l_time<0))

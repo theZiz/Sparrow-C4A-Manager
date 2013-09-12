@@ -35,7 +35,10 @@ void draw_account(spFontPointer font,spFontPointer font_small)
 	spFontDrawRight( screen->w-2, 2, 0, "[E] Back", font_small );
 	if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)	
 		spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_small );
-	spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_small );
+	if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)
+		spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_small );
+	else
+		spFontDraw( 2, 2, 0, SP_PAD_NAME": Select Row", font_small );
 	switch (mode)
 	{
 		case 0:
@@ -296,10 +299,13 @@ int calc_account(Uint32 steps)
 			shortName[i] += 'A'-'a';
 	}
 		
-	if ( spGetInput()->button[SP_BUTTON_R_NOWASD] )
+	if (spGetInput()->button[SP_BUTTON_R_NOWASD] ||
+	   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] > 0))
 	{
 		line = (line + 1) % 4;
 		spGetInput()->button[SP_BUTTON_R_NOWASD] = 0;
+		if (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS)
+			spGetInput()->axis[1] = 0;
 		blink = 0;
 		switch (line)
 		{
@@ -309,10 +315,13 @@ int calc_account(Uint32 steps)
 			case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
 		}
 	}
-	if ( spGetInput()->button[SP_BUTTON_L_NOWASD] )
+	if (spGetInput()->button[SP_BUTTON_L_NOWASD] ||
+	   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] < 0))
 	{
 		line = (line + 3) % 4;
 		spGetInput()->button[SP_BUTTON_L_NOWASD] = 0;
+		if (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS)
+			spGetInput()->axis[1] = 0;
 		blink = 0;
 		switch (line)
 		{
