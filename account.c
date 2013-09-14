@@ -47,7 +47,7 @@ void draw_account(spFontPointer font,spFontPointer font_small)
 			break;		
 		case 1:
 			spFontDrawMiddle( 2*screen->w/3, 1*screen->h/9, 0, ">>> Account Editing <<<", font);
-			spFontDrawMiddle( 2*screen->w/3, 2*screen->h/11, 0, "Press [S] to edit the account", font_small);
+			spFontDrawMiddle( 2*screen->w/3, 2*screen->h/11, 0, "Press [S] to save the changes", font_small);
 			spFontDrawMiddle( 2*screen->w/3, 2*screen->h/8, 0, "Press [E] to delete the account", font_small);
 			break;		
 	}
@@ -231,60 +231,62 @@ int calc_account(Uint32 steps)
 			
 	}
 	right_after_status = 0;
-	switch ( askMode )
-	{
-		case 1:
-			if ( spGetInput()->button[SP_BUTTON_START_NOWASD] )
-			{
-				spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
-				if (spNetC4ADeleteAccount(&profile,1,TIME_OUT) == 0)
-				{
-					right_after_status = 1;
-					last_task = 2;
-				}
-				nextMode = 0;
-				sprintf(longName,"");
-				sprintf(shortName,"");
-				sprintf(password,"");
-				sprintf(mail,"");
-				askMode = 0;
-				switch (line)
-				{
-					case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-				}
-			}
-			if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
-			{
-				spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;
-				askMode = 0;
-				switch (line)
-				{
-					case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-				}
-			}
-			break;
-		default:
-			if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
-			{
-				spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
-				askMode = 0;
-				switch (line)
-				{
-					case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-					case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
-				}
-			}
-	}
 	if (askMode)
+	{
+		switch ( askMode )
+		{
+			case 1:
+				if ( spGetInput()->button[SP_BUTTON_START_NOWASD] )
+				{
+					spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
+					if (spNetC4ADeleteAccount(&profile,1,TIME_OUT) == 0)
+					{
+						right_after_status = 1;
+						last_task = 2;
+					}
+					nextMode = 0;
+					sprintf(longName,"");
+					sprintf(shortName,"");
+					sprintf(password,"");
+					sprintf(mail,"");
+					askMode = 0;
+					switch (line)
+					{
+						case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					}
+				}
+				if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
+				{
+					spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;
+					askMode = 0;
+					switch (line)
+					{
+						case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					}
+				}
+				break;
+			default:
+				if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
+				{
+					spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
+					askMode = 0;
+					switch (line)
+					{
+						case 0: spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 1: spPollKeyboardInput(longName,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 2: spPollKeyboardInput(password,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+						case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
+					}
+				}
+		}
 		return 0;
+	}
 	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
 	{
 		spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;

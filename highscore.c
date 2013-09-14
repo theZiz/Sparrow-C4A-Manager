@@ -34,6 +34,8 @@ int r_pressed = 0;
 int l_pressed = 0;
 int r_time = 0;
 int l_time = 0;
+int year,momYear;
+int month,momMonth;
 
 void draw_high_with_border(int x,int y,int z,char* text_,spFontPointer font,int p)
 {
@@ -158,9 +160,27 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 			score = score->next;
 		}
 		spRectangle(screen->w/2,screen->h/9,0,screen->w,2*screen->h/9,BACKGROUND_COLOR);
-		sprintf(buffer,"All Time Highscore of \"%s\"",selectedGame->longname);
+		if (year == momYear && month == momMonth + 1)
+			sprintf(buffer,"All Time Highscore of \"%s\"",selectedGame->longname);
+		else
+		switch (month)
+		{
+			case  1: sprintf(buffer,"January %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case  2: sprintf(buffer,"February %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case  3: sprintf(buffer,"March %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case  4: sprintf(buffer,"April %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case  5: sprintf(buffer,"May %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case  6: sprintf(buffer,"June %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case  7: sprintf(buffer,"July %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case  8: sprintf(buffer,"August %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case  9: sprintf(buffer,"September %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case 10: sprintf(buffer,"October %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case 11: sprintf(buffer,"November %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+			case 12: sprintf(buffer,"December %i - Highscore of \"%s\"",year,selectedGame->longname); break;
+		}
 		spFontDrawMiddle( screen->w/2, screen->h/9, 0, buffer, font );
 		spFontDraw( 2, 2, 0, SP_PAD_NAME": Scroll", font_small );
+		spFontDrawMiddle( screen->w/2, 2, 0, "[L] & [R]: Select month", font );
 	}
 	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_small );
 
@@ -198,6 +218,21 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 }
 
 int right_after_task = 0;
+
+void updateScore()
+{
+	spNetC4ADeleteScores(&scoreList);
+	if (year == momYear && month == momMonth + 1)
+	{
+		if (spNetC4AGetScore(&scoreList,NULL,selectedGame->shortname,TIME_OUT) == 0)
+			right_after_task = 1;
+	}
+	else
+	{
+		if (spNetC4AGetScoreOfMonth(&scoreList,NULL,selectedGame->shortname,year,month,TIME_OUT) == 0)
+			right_after_task = 1;
+	}
+}
 
 int calc_highscore(Uint32 steps)
 {
@@ -287,13 +322,37 @@ int calc_highscore(Uint32 steps)
 
 	if ( showScore )
 	{
-		if ( spGetInput()->button[SP_BUTTON_R_NOWASD] || spGetInput()->axis[1] > 0)
+		if (spGetInput()->button[SP_BUTTON_R_NOWASD])
+		{
+			spGetInput()->button[SP_BUTTON_R_NOWASD] = 0;
+			if (year != momYear || month != momMonth + 1)
+			{
+				month++;
+				if (month > 12)
+				{
+					month = 1;
+					year++;
+				}
+				updateScore();
+			}
+		}
+		if (spGetInput()->button[SP_BUTTON_L_NOWASD])
+		{
+			spGetInput()->button[SP_BUTTON_L_NOWASD] = 0;
+			month--;
+			if (month <= 0)
+			{
+				month = 12;
+				year--;
+			}
+			updateScore();
+		}		if ( spGetInput()->axis[1] > 0)
 		{
 			scorePosition+=steps*1024;
 			if (spFixedToInt(scorePosition) > scoreCount-2)
 				scorePosition = spIntToFixed(scoreCount-2)+SP_ONE-1;
 		}
-		if ( spGetInput()->button[SP_BUTTON_L_NOWASD] || spGetInput()->axis[1] < 0)
+		if (spGetInput()->axis[1] < 0)
 		{
 			scorePosition-=steps*1024;
 			if (spFixedToInt(scorePosition) <0)
@@ -314,8 +373,15 @@ int calc_highscore(Uint32 steps)
 		{
 			spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
 			spStopKeyboardInput();
-			if (spNetC4AGetScore(&scoreList,NULL,selectedGame->shortname,TIME_OUT) == 0)
-				right_after_task = 1;
+			time_t rawtime;
+			struct tm * ptm;
+			time ( &rawtime );
+			ptm = gmtime ( &rawtime );	
+			momYear = ptm->tm_year+1900;
+			momMonth = ptm->tm_mon+1;
+			year = momYear;
+			month = momMonth+1;
+			updateScore();
 		}	
 		
 		if (r_pressed)

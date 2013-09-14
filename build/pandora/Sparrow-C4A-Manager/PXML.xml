@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PXML xmlns="http://openpandora.org/namespaces/PXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PXML_schema.xsd">
   <package id="Sparrow-C4A-Manager-1337">
-    <version major="1" minor="0" release="0" build="0"/>
+    <version major="1" minor="0" release="1" build="0"/>
     <author name="Ziz" website="http://ziz.openhandhelds.org"/>
     <titles>
       <title lang="en_US">
@@ -14,10 +14,16 @@
     <descriptions>
       <description lang="en_US">
 			An alternative manager for Compo4all profiles.
+			Features:
+			* Creating, Editing and Deleting C4A profiles
+			* Viewing C4A highscores
       </description>
     </descriptions>
     <description lang="en_US">
-			An alternatie manager for Compo4all profiles.
+			An alternative manager for Compo4all profiles.
+			Features:
+			* Creating, Editing and Deleting C4A profiles
+			* Viewing C4A highscores
     </description>
     <icon src="./Sparrow-C4A-Manager.png"/>
   </package>
@@ -25,9 +31,9 @@
     <exec command="./Sparrow-C4A-Manager.sh"/>
     <title lang="en_US">Sparrow C4A Manager</title>
     <author name="Ziz" website="http://ziz.openhandhelds.org"/>
-    <version major="1" minor="0" release="0" build="0"/>
+    <version major="1" minor="0" release="1" build="0"/>
     <osversion major="1" minor="0" release="0" build="0"/>
-    <description lang="en_US">An alternatie manager for Compo4all profiles.</description>
+    <description lang="en_US">An alternative manager for Compo4all profiles.</description>
     <info name="README" type="text/plain" src="README.md"/>
     <icon src="./Sparrow-C4A-Manager.png"/>
     <previewpics>
@@ -38,12 +44,8 @@
     </previewpics>
     <licenses>
       <license name="GPLv2+" url="http://www.gnu.org/licenses/gpl-2.0.html" sourcecodeurl="https://github.com/theZiz/Sparrow-C4A-Manager"/>
-      <license name="MPL1.1" url="http://www.mozilla.org/MPL/1.1/" sourcecodeurl="https://github.com/theZiz/Sparrow-C4A-Manager"/>
     </licenses>
     <categories>
-      <category name="Game">
-        <subcategory name="Emulator"/>
-      </category>
       <category name="System">
       </category>
     </categories>
