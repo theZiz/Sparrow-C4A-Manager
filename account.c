@@ -393,7 +393,8 @@ int calc_account(Uint32 steps)
 void start_account()
 {
 	spPollKeyboardInput(shortName,3,SP_PRACTICE_OK_NOWASD_MASK);
-	
+	mode = 0;
+	line = 0;
 	profile = spNetC4AGetProfile();
 	if (profile)
 	{
