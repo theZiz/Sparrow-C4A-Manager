@@ -237,14 +237,16 @@ void updateScore()
 int calc_highscore(Uint32 steps)
 {
 	highscore_blink+=steps;
-	
+printf("Hopping in...\n");
 	if (spNetC4AGetStatus() > 0)
 	{
 		right_after_task = 1;
 		return 0;
 	}
+printf("...and out!\n");
 	if (right_after_task)
 	{
+printf("Right after task!\n");
 		if (spNetC4AGetTaskResult() == 0)
 		{
 			if (serverTask == 0)
@@ -282,7 +284,7 @@ int calc_highscore(Uint32 steps)
 		}
 	}
 	right_after_task = 0;
-
+printf("Debug 1\n");
 	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
 	{
 		spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] = 0;
@@ -299,6 +301,7 @@ int calc_highscore(Uint32 steps)
 		}
 	}
 
+printf("Debug 2\n");
 	switch ( highMode )
 	{
 		case 1:
@@ -317,9 +320,10 @@ int calc_highscore(Uint32 steps)
 			}
 			break;
 	}
+printf("Debug 3\n");
 	if (highMode)
 		return 0;
-
+printf("Debug 4\n");
 	if ( showScore )
 	{
 		if (spGetInput()->button[SP_BUTTON_R_NOWASD])
@@ -361,6 +365,7 @@ int calc_highscore(Uint32 steps)
 	}
 	else
 	{
+printf("Debug 5\n");
 		int i;
 		for (i = 0; filter[i] != 0; i++)
 		{
@@ -444,6 +449,7 @@ int calc_highscore(Uint32 steps)
 			}
 		}
 	}
+printf("Debug 6\n");	
 	return 0;
 }
 
@@ -458,10 +464,8 @@ void start_highscore()
 	gameCount = 0;
 	right_after_task = 0;	
 	serverTask = 0;
-printf("Debug 1\n");
 	if (spNetC4AGetGame(&gameList,TIME_OUT) == 0)
 		right_after_task = 1;
-printf("Debug 2\n");
 }
 
 void finish_highscore()
