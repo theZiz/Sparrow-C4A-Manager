@@ -458,8 +458,10 @@ void start_highscore()
 	gameCount = 0;
 	right_after_task = 0;	
 	serverTask = 0;
+printf("Debug 1\n");
 	if (spNetC4AGetGame(&gameList,TIME_OUT) == 0)
 		right_after_task = 1;
+printf("Debug 2\n");
 }
 
 void finish_highscore()
