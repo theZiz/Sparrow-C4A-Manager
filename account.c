@@ -29,16 +29,16 @@ char mail[256] = "";
 int blink = 0;
 spNetC4AProfilePointer profile;
 
-void draw_account(spFontPointer font,spFontPointer font_small)
+void draw_account(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small)
 {
 	SDL_Surface* screen = spGetWindowSurface();
-	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_small );
+	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_very_small );
 	if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)	
-		spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_small );
+		spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_very_small );
 	if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)
-		spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_small );
+		spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_very_small );
 	else
-		spFontDraw( 2, 2, 0, SP_PAD_NAME": Select Row", font_small );
+		spFontDraw( 2, 2, 0, SP_PAD_NAME": Select Row", font_very_small );
 	switch (mode)
 	{
 		case 0:
@@ -66,22 +66,22 @@ void draw_account(spFontPointer font,spFontPointer font_small)
 	spFontDrawRight( screen->w/3, 3*screen->h/9, 0, "3 Letter Nick:", font);
 	spFontDrawMiddle( 2*screen->w/3, 3*screen->h/9, 0, shortName, font);
 	spLine( screen->w/3+10, 7*screen->h/18, 0, screen->w-10, 7*screen->h/18,0,65535);
-	spFontDrawMiddle( 2*screen->w/3, 7*screen->h/18, 0, "(e.g. JHN)", font_small);
+	spFontDrawMiddle( 2*screen->w/3, 7*screen->h/18, 0, "(e.g. JHN)", font_very_small);
 
 	spFontDrawRight( screen->w/3, 4*screen->h/9, 0, "Display Nick:", font);
 	spFontDrawMiddle( 2*screen->w/3, 4*screen->h/9, 0, longName, font);
 	spLine( screen->w/3+10, 9*screen->h/18, 0, screen->w-10, 9*screen->h/18,0,65535);
-	spFontDrawMiddle( 2*screen->w/3, 9*screen->h/18, 0, "(e.g. JohnSmith)", font_small);
+	spFontDrawMiddle( 2*screen->w/3, 9*screen->h/18, 0, "(e.g. JohnSmith)", font_very_small);
 
 	spFontDrawRight( screen->w/3, 5*screen->h/9, 0, "Password:", font);
 	spFontDrawMiddle( 2*screen->w/3, 5*screen->h/9, 0, password, font);
 	spLine( screen->w/3+10, 11*screen->h/18, 0, screen->w-10, 11*screen->h/18,0,65535);
-	spFontDrawMiddle( 2*screen->w/3, 11*screen->h/18, 0, "(alphanumeric, e.g. aBc123)", font_small);
+	spFontDrawMiddle( 2*screen->w/3, 11*screen->h/18, 0, "(alphanumeric, e.g. aBc123)", font_very_small);
 
 	spFontDrawRight( screen->w/3, 6*screen->h/9, 0, "E-Mail address:", font);
 	spFontDrawMiddle( 2*screen->w/3, 6*screen->h/9, 0, mail, font);
 	spLine( screen->w/3+10, 13*screen->h/18, 0, screen->w-10, 13*screen->h/18,0,65535);
-	spFontDrawMiddle( 2*screen->w/3, 13*screen->h/18, 0, "(for score being beaten notification)", font_small);
+	spFontDrawMiddle( 2*screen->w/3, 13*screen->h/18, 0, "(for score being beaten notification)", font_very_small);
 	if (spIsKeyboardPolled() && spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)
 		spBlitSurface(screen->w/2,screen->h-spGetVirtualKeyboard()->h/2,0,spGetVirtualKeyboard());
 	

@@ -23,6 +23,7 @@
 SDL_Surface* screen;
 spFontPointer font = NULL;
 spFontPointer font_small = NULL;
+spFontPointer font_very_small = NULL;
 SDL_Surface* banner;
 
 typedef enum {
@@ -40,14 +41,14 @@ void draw( void )
 	{
 		case menu:
 			spRotozoomSurface( screen->w/6, 2*screen->h/36+spFixedToInt(banner->h*spGetSizeFactor()/4)/2+2, 0, banner, spGetSizeFactor()/4, spGetSizeFactor()/4,0);
-			draw_menu(font,font_small);
+			draw_menu(font,font_small,font_very_small);
 			break;
 		case account:
 			spRotozoomSurface( screen->w/6, 2*screen->h/36+spFixedToInt(banner->h*spGetSizeFactor()/4)/2+2, 0, banner, spGetSizeFactor()/4, spGetSizeFactor()/4,0);
-			draw_account(font,font_small);
+			draw_account(font,font_small,font_very_small);
 			break;
 		case highscore:
-			draw_highscore(font,font_small);
+			draw_highscore(font,font_small,font_very_small);
 			break;
 	}
 	spFlip();
@@ -132,6 +133,19 @@ void resize(Uint16 w,Uint16 h)
 	spFontAddButton( font_small, 'R', SP_BUTTON_R_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 	spFontAddButton( font_small, 'S', SP_BUTTON_START_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 	spFontAddButton( font_small, 'E', SP_BUTTON_SELECT_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+
+	if (font_very_small)
+		spFontDelete(font_very_small);
+	font_very_small = spFontLoad(FONT_LOCATION,FONT_SIZE_VERY_SMALL*spGetSizeFactor()>>SP_ACCURACY);
+	spFontAdd(font_very_small,SP_FONT_GROUP_ASCII,spGetRGB(192,192,192));//whole ASCII
+	spFontAddBorder(font_very_small,BACKGROUND_COLOR);
+	spFontMulWidth(font_very_small,15<<SP_ACCURACY-4);
+	spFontAddButton( font_very_small, 'B', SP_PRACTICE_OK_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font_very_small, 'X', SP_PRACTICE_CANCEL_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font_very_small, 'L', SP_BUTTON_L_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font_very_small, 'R', SP_BUTTON_R_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font_very_small, 'S', SP_BUTTON_START_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
+	spFontAddButton( font_very_small, 'E', SP_BUTTON_SELECT_NOWASD_NAME, spGetRGB(230,230,230), spGetRGB(64,64,64));
 }
 
 int main(int argc, char **argv)
@@ -148,7 +162,7 @@ int main(int argc, char **argv)
 	spSetZTest(0);
 	banner = spLoadSurface("images/banner.png");
 
-	start_menu(font,font_small);
+	start_menu(font,font_small,font_very_small);
 	spLoop( draw, calc, 10, resize, NULL );
 	finish_menu();
 	
@@ -156,6 +170,7 @@ int main(int argc, char **argv)
 
 	spFontDelete(font);
 	spFontDelete(font_small);
+	spFontDelete(font_very_small);
 	spQuitCore();
 	return 0;
 }

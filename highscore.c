@@ -93,7 +93,7 @@ Sint32 scorePosition = 0;
 
 int right_after_task = 0;
 
-void draw_highscore(spFontPointer font,spFontPointer font_small)
+void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small)
 {
 	SDL_Surface* screen = spGetWindowSurface();
 	char buffer[256];
@@ -101,20 +101,20 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 	{
 		if (spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)	
 		{
-			spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_small );
+			spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter letter", font_very_small );
 			spFontDrawMiddle( screen->w/5, screen->h/9, 0, "[S] View Highscore", font_small);
-			spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_small );
+			spFontDraw( 2, 2, 0, "[L] & [R]: Select Row", font_very_small );
 		}
 		else
 		{
 			spFontDrawMiddle( screen->w/5, screen->h/9, 0, "[B] View Highscore", font_small);
-			spFontDraw( 2, 2, 0, SP_PAD_NAME": Select Row", font_small );
+			spFontDraw( 2, 2, 0, SP_PAD_NAME": Select Row", font_very_small );
 		}
 		
 		spFontDrawRight( screen->w/2, 1*screen->h/9, 0, "Filter:", font);
 		spFontDrawMiddle( 3*screen->w/4, 1*screen->h/9, 0, filter, font);
 		spLine( screen->w/2+10, 3*screen->h/18, 0, screen->w-10, 3*screen->h/18,0,65535);
-		spFontDrawMiddle(  3*screen->w/4, 3*screen->h/18, 0, "(e.g. Puzzletube)", font_small);
+		spFontDrawMiddle(  3*screen->w/4, 3*screen->h/18, 0, "(e.g. Puzzletube)", font_very_small);
 		spLine( 3*screen->w/4 + spFontWidth(filter,font)/2+1, 2*screen->h/18, 0,
 				3*screen->w/4 + spFontWidth(filter,font)/2+1, 3*screen->h/18-1, 0, ((highscore_blink/512)&1)?0:65535);
 
@@ -181,10 +181,10 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 			case 12: sprintf(buffer,"December %i - Highscore of \"%s\"",year,selectedGame->longname); break;
 		}
 		spFontDrawMiddle( screen->w/2, screen->h/9, 0, buffer, font );
-		spFontDraw( 2, 2, 0, SP_PAD_NAME": Scroll", font_small );
-		spFontDrawMiddle( screen->w/2, 2, 0, "[L] & [R]: Select month", font );
+		spFontDraw( 2, 2, 0, SP_PAD_NAME": Scroll", font_very_small );
+		spFontDrawMiddle( screen->w/2, 2, 0, "[L] & [R]: Select month", font_very_small );
 	}
-	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_small );
+	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_very_small );
 
 	switch (highMode)
 	{

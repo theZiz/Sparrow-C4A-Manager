@@ -19,7 +19,7 @@
 #define _ACCOUNT_H
 #include <sparrow3d.h>
 
-void draw_account(spFontPointer font,spFontPointer font_small);
+void draw_account(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small);
 int calc_account(Uint32 steps);
 void start_account();
 void finish_account();

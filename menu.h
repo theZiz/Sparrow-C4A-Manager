@@ -19,9 +19,9 @@
 #define _MENU_H
 #include <sparrow3d.h>
 
-void draw_menu(spFontPointer font,spFontPointer font_small);
+void draw_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small);
 int calc_menu(Uint32 steps);
-void start_menu(spFontPointer font,spFontPointer font_small);
+void start_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small);
 void finish_menu();
 
 #endif

@@ -18,12 +18,22 @@
 #include "menu.h"
 #include "defines.h"
 
+#ifdef GCW
+	#define C4A_POS "/usr/local/home/.config/compo4all/"
+#elif defined PANDORA
+	#define C4A_POS "your compo4all appdata folder"
+#else
+	#define C4A_POS "/.config/compo4all/"
+#endif
+
 char explanation[2048] = "Welcome to the Sparrow-C4A-Manager. C4A stands for \
 \"Compo4All\". The Compo4All Highscore system made by skeezix is an easy way \
 to submit highscores to an online highscore list to compare your achievements \
 with players all over the world. With this application you can create your \
 unique account for every supported game and view online highscores - even of \
-uninstalled games. An internet connection is needed!";
+uninstalled games. An internet connection is needed! You can use the same \
+profile on different devices by copying the c4a-prof to any device. On the \
+"SP_DEVICE_STRING" the file lies in "C4A_POS". ";
 
 spTextBlockPointer help;
 int menu_point = 0;
@@ -46,18 +56,18 @@ void draw_middle_with_border(int x,int y,int z,char* text_,spFontPointer font,in
 	spRectangleBorder(x,y+font->maxheight/2,z,l_+2*BORDER_DISTANCE,font->maxheight+2*BORDER_DISTANCE,BORDER_SIZE*factor,BORDER_SIZE*factor,BORDER_COLOR);
 }
 
-void draw_menu(spFontPointer font,spFontPointer font_small)
+void draw_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small)
 {
 	SDL_Surface* screen = spGetWindowSurface();
-	spFontDrawRight( screen->w-2, 2, 0, "[X] Exit", font_small );
-	spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter menu point", font_small );
-	spFontDraw( 2, 2, 0, SP_PAD_NAME": Select menu point", font_small );
+	spFontDrawRight( screen->w-2, 2, 0, "[X] Exit", font_very_small );
+	spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter menu point", font_very_small );
+	spFontDraw( 2, 2, 0, SP_PAD_NAME": Select menu point", font_very_small );
 	
 	draw_middle_with_border( screen->w*2/3, screen->h*1/8, 0, "Account Management", font, 0);
 	draw_middle_with_border( screen->w*2/3, screen->h*2/8, 0, "Online Highscores", font, 1);
 	draw_middle_with_border( screen->w*2/3, screen->h*3/8, 0, "Exit", font, 2);
 	
-	spFontDrawTextBlock(middle,5,screen->h*4/8,0,help,spGetWindowSurface()->h,0,font_small);
+	spFontDrawTextBlock(middle,5,screen->h*4/8,0,help,spGetWindowSurface()->h,0,font_very_small);
 }
 
 int calc_menu(Uint32 steps)
@@ -90,9 +100,9 @@ int calc_menu(Uint32 steps)
 	return 0;
 }
 
-void start_menu(spFontPointer font,spFontPointer font_small)
+void start_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small)
 {
-	help = spCreateTextBlock( explanation, spGetWindowSurface()->w-10,font_small);
+	help = spCreateTextBlock( explanation, spGetWindowSurface()->w-10,font_very_small);
 }
 
 void finish_menu()
