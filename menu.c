@@ -30,8 +30,8 @@ int menu_point = 0;
 
 void draw_middle_with_border(int x,int y,int z,char* text_,spFontPointer font,int p)
 {
-	int text_len = strlen(text_)+10;
-	char text[text_len];
+	int text_len = strlen(text_);
+	char text[text_len+9]; //->____<- + 0
 	int factor = 1;
 	if (p == menu_point)
 	{
