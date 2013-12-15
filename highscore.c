@@ -91,8 +91,11 @@ void updateSelectedGame(int direction)
 
 Sint32 scorePosition = 0;
 
+int right_after_task = 0;
+
 void draw_highscore(spFontPointer font,spFontPointer font_small)
 {
+	printf("Draw\n");
 	SDL_Surface* screen = spGetWindowSurface();
 	char buffer[256];
 	if (showScore == 0)
@@ -184,8 +187,6 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 	}
 	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_small );
 
-
-
 	switch (highMode)
 	{
 		case 1:
@@ -199,6 +200,7 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Okay", font);
 			break;
 	}	
+
 	if (spNetC4AGetStatus() > 0)
 	{
 		spInterpolateTargetToColor(0,3*SP_ONE/4);
@@ -216,8 +218,6 @@ void draw_highscore(spFontPointer font,spFontPointer font_small)
 	if (spIsKeyboardPolled() && spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS)
 		spBlitSurface(screen->w/2,screen->h-spGetVirtualKeyboard()->h/2,0,spGetVirtualKeyboard());	
 }
-
-int right_after_task = 0;
 
 void updateScore()
 {
@@ -253,6 +253,7 @@ int calc_highscore(Uint32 steps)
 				gameCount = 0;
 				while (game)
 				{
+					printf("%s - %s - %s - %i - %i\n",game->longname,game->shortname,game->genre,game->status,game->field);
 					gameCount++;
 					game = game->next;
 				}
@@ -369,6 +370,7 @@ int calc_highscore(Uint32 steps)
 		   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->button[SP_PRACTICE_OK_NOWASD])))
 		{
 			spGetInput()->button[SP_BUTTON_START_NOWASD] = 0;
+			spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
 			spStopKeyboardInput();
 			time_t rawtime;
 			struct tm * ptm;
