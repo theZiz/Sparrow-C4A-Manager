@@ -46,7 +46,9 @@ void draw( void )
 			spRotozoomSurface( screen->w/6, 2*screen->h/36+spFixedToInt(banner->h*spGetSizeFactor()/4)/2+2, 0, banner, spGetSizeFactor()/4, spGetSizeFactor()/4,0);
 			draw_account(font,font_small);
 			break;
-		case highscore: draw_highscore(font,font_small); break;
+		case highscore:
+			draw_highscore(font,font_small);
+			break;
 	}
 	spFlip();
 }

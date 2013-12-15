@@ -37,10 +37,10 @@ int l_time = 0;
 int year,momYear;
 int month,momMonth;
 
-void draw_high_with_border(int x,int y,int z,char* text_,spFontPointer font,int p)
+void draw_high_with_border(int x,int y,int z,const char* text_,spFontPointer font,int p)
 {
-	int text_len = strlen(text_)+10;
-	char text[text_len];
+	int text_len = strlen(text_);
+	char text[text_len+9]; //->____<- + 0
 	if (p)
 		sprintf(text,"->  %s  <-",text_);
 	else
@@ -52,7 +52,7 @@ void draw_high_with_border(int x,int y,int z,char* text_,spFontPointer font,int 
 		spRectangleBorder(x,y+font->maxheight/2,z,l_+2*BORDER_DISTANCE,font->maxheight+2*BORDER_DISTANCE,BORDER_SIZE,BORDER_SIZE,BORDER_COLOR);
 }
 
-int filter_matches(char* test)
+int filter_matches(const char* test)
 {
 	if (filter[0] == 0)
 		return 1;
@@ -71,7 +71,7 @@ int filter_matches(char* test)
 	return 0;
 }
 
-void updateSelectedGame(int direction)
+void updateSelectedGame()
 {
 	int i = 0;
 	selectedGame = gameList;
@@ -95,7 +95,6 @@ int right_after_task = 0;
 
 void draw_highscore(spFontPointer font,spFontPointer font_small)
 {
-	printf("Draw\n");
 	SDL_Surface* screen = spGetWindowSurface();
 	char buffer[256];
 	if (showScore == 0)
@@ -392,7 +391,7 @@ int calc_highscore(Uint32 steps)
 				 ( r_pressed && r_time<0))
 			{
 				pos = (pos + 1) % gameCount;
-				updateSelectedGame(0);
+				updateSelectedGame();
 				if (!r_pressed) //first
 					r_time = 300;
 				else
@@ -415,7 +414,7 @@ int calc_highscore(Uint32 steps)
 				 ( l_pressed && l_time<0))
 			{
 				pos = (pos - 1 + gameCount) % gameCount;
-				updateSelectedGame(1);
+				updateSelectedGame();
 				if (!l_pressed) //first
 					l_time = 300;
 				else
