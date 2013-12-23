@@ -1,12 +1,14 @@
 #!/bin/sh
 # Change the folder to YOUR sparrow3d folder!
 PROGRAM="Sparrow-C4A-Manager"
-VERSION="1.0.3.1"
+VERSION="1.0.3.2"
 DEST=./build/*
 echo "<html>" > index.htm
 echo "<head>" >> index.htm
 echo "</head>" >> index.htm
 echo "<body>" >> index.htm
+TIME=`date -u +"%d.%m.%Y %r"`
+echo "Updated at the $TIME." >> index.htm
 echo "<h1>$PROGRAM download links:</h1>" >> index.htm
 for f in $DEST
 do
