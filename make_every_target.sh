@@ -1,9 +1,8 @@
 #!/bin/sh
 # Change the folder to YOUR sparrow3d folder!
 cd ../sparrow3d
-#FILES=./target-files/*
-#The program only makes sense for a couple of targets:
-FILES="./target-files/caanoo.mk ./target-files/gcw.mk ./target-files/i386.mk ./target-files/pandora.mk"
+FILES=./target-files/*
+#FILES="./target-files/caanoo.mk ./target-files/gcw.mk ./target-files/i386.mk ./target-files/pandora.mk"
 echo "Compiling for all targets..."
 for f in $FILES
 do
