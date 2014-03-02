@@ -17,16 +17,16 @@
 
 #define GCW_FEELING
 
-#if defined GCW_FEELING && defined X86CPU
+/*#if defined GCW_FEELING && defined X86CPU
 	#define TESTING
 	#define GCW
 	#undef X86CPU
-#endif
+#endif*/
 #include <sparrow3d.h>
-#if defined GCW_FEELING && defined TESTING
+/*#if defined GCW_FEELING && defined TESTING
 	#define X86CPU
 	#undef GCW
-#endif
+#endif*/
 
 #include "defines.h"
 #include "menu.h"
@@ -165,6 +165,7 @@ int main(int argc, char **argv)
 	srand(time(NULL));
 	//spSetDefaultWindowSize(800,480);
 	spInitCore();
+	spInitNet();
 	spSetAffineTextureHack(0); //We don't need it :)
 	spInitMath();
 	screen = spCreateDefaultWindow();
