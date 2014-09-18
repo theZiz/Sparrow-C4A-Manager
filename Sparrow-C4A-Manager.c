@@ -153,6 +153,7 @@ int main(int argc, char **argv)
 	srand(time(NULL));
 	//spSetDefaultWindowSize(800,480);
 	spInitCore();
+	spSetReturnBehavior(1,0);
 	spSetAffineTextureHack(0); //We don't need it :)
 	spInitMath();
 	screen = spCreateDefaultWindow();
