@@ -7,7 +7,7 @@ echo "<html>" > index.htm
 echo "<head>" >> index.htm
 echo "</head>" >> index.htm
 echo "<body>" >> index.htm
-TIME=`date -u +"%d.%m.%Y %r"`
+TIME=`date -u +"%d.%m.%Y %R"`
 echo "Updated at the $TIME." >> index.htm
 echo "<h1>$PROGRAM download links:</h1>" >> index.htm
 for f in $DEST
@@ -33,9 +33,9 @@ do
 				echo "<a href=$PROGRAM-$NAME-$VERSION.tar.gz>$NAME</a></br>" >> ../../index.htm
 			else
 				if [ $NAME = "gcw" ]; then
-					mksquashfs * "$PROGRAM-$NAME-$VERSION.opk" -all-root -noappend -no-exports -no-xattrs
-					mv "$PROGRAM-$NAME-$VERSION.opk" ../..
-					echo "<a href=$PROGRAM-$NAME-$VERSION.opk type=\"application/x-opk+squashfs\">$NAME</a></br>" >> ../../index.htm
+					mksquashfs * "$PROGRAM.opk" -all-root -noappend -no-exports -no-xattrs
+					mv "$PROGRAM.opk" ../..
+					echo "<a href=$PROGRAM.opk type=\"application/x-opk+squashfs\">$NAME</a></br>" >> ../../index.htm
 				else
 					zip -r "$PROGRAM-$NAME-$VERSION.zip" * > /dev/null
 					mv "$PROGRAM-$NAME-$VERSION.zip" ../..
