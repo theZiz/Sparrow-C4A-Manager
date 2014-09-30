@@ -87,6 +87,7 @@ void updateSelectedGame()
 		selectedGame = selectedGame->next;
 		i++;
 	}
+	pos = i;
 }
 
 Sint32 scorePosition = 0;
@@ -384,8 +385,8 @@ int calc_highscore(Uint32 steps)
 		
 		if (r_pressed)
 			r_time -= steps;
-		if (spGetInput()->button[SP_BUTTON_R_NOWASD] ||
-		   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] > 0))
+		if ((spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->button[SP_BUTTON_R_NOWASD]) ||
+		    (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] > 0))
 		{
 			if ( (!r_pressed) ||
 				 ( r_pressed && r_time<0))
@@ -407,8 +408,8 @@ int calc_highscore(Uint32 steps)
 		
 		if (l_pressed)
 			l_time -= steps;
-		if (spGetInput()->button[SP_BUTTON_L_NOWASD] ||
-		   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] < 0))
+		if ((spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->button[SP_BUTTON_L_NOWASD]) ||
+		    (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] < 0))
 		{
 			if ( (!l_pressed) ||
 				 ( l_pressed && l_time<0))

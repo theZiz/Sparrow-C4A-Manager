@@ -301,8 +301,8 @@ int calc_account(Uint32 steps)
 			shortName[i] += 'A'-'a';
 	}
 		
-	if (spGetInput()->button[SP_BUTTON_R_NOWASD] ||
-	   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] > 0))
+	if ((spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->button[SP_BUTTON_R_NOWASD]) ||
+	    (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] > 0))
 	{
 		line = (line + 1) % 4;
 		spGetInput()->button[SP_BUTTON_R_NOWASD] = 0;
@@ -317,8 +317,8 @@ int calc_account(Uint32 steps)
 			case 3: spPollKeyboardInput(mail,256,SP_PRACTICE_OK_NOWASD_MASK); break;
 		}
 	}
-	if (spGetInput()->button[SP_BUTTON_L_NOWASD] ||
-	   (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] < 0))
+	if ((spGetVirtualKeyboardState() == SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->button[SP_BUTTON_L_NOWASD]) ||
+	    (spGetVirtualKeyboardState() != SP_VIRTUAL_KEYBOARD_ALWAYS && spGetInput()->axis[1] < 0))
 	{
 		line = (line + 3) % 4;
 		spGetInput()->button[SP_BUTTON_L_NOWASD] = 0;
