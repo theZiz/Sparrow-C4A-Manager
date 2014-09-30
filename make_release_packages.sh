@@ -1,7 +1,7 @@
 #!/bin/sh
 # Change the folder to YOUR sparrow3d folder!
 PROGRAM="Sparrow-C4A-Manager"
-VERSION="1.0.3.3"
+VERSION="1.0.3.4"
 DEST=./build/*
 echo "<html>" > index.htm
 echo "<head>" >> index.htm
@@ -18,7 +18,7 @@ do
 		echo "--> Copy temporary folders"
 		cp -r font "$f/$PROGRAM"
 		cp -r images "$f/$PROGRAM"
-		cp README.md "$f/$PROGRAM"
+		cp Sparrow_C4A.md "$f/$PROGRAM"
 		cd $f
 		echo "--> Create archive"
 		if [ $NAME = "pandora" ]; then
@@ -46,7 +46,7 @@ do
 		echo "--> Remove temporary folders"
 		rm -r $PROGRAM/font
 		rm -r $PROGRAM/images
-		rm $PROGRAM/README.md
+		rm $PROGRAM/Sparrow_C4A.md
 		cd ..
 		cd ..
 	fi

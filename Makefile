@@ -10,6 +10,10 @@ SDL = `sdl-config --cflags`
 
 SPARROW_FOLDER = ../sparrow3d
 
+SPARROW3D_LIB = libsparrow3d.so
+SPARROWNET_LIB = libsparrowNet.so
+SPARROWSOUND_LIB = libsparrowSound.so
+
 ifdef TARGET
 include $(SPARROW_FOLDER)/target-files/$(TARGET).mk
 BUILD = ./build/$(TARGET)/Sparrow-C4A-Manager
@@ -30,8 +34,8 @@ targets:
 	@echo "The targets are the same like for sparrow3d. :P"
 
 Sparrow-C4A-Manager: Sparrow-C4A-Manager.c account.o menu.o highscore.o defines.h makeBuildDir
-	cp $(SPARROW_LIB)/libsparrow3d.so $(BUILD)
-	cp $(SPARROW_LIB)/libsparrowNet.so $(BUILD)
+	cp $(SPARROW_LIB)/$(SPARROW3D_LIB) $(BUILD)
+	cp $(SPARROW_LIB)/$(SPARROWNET_LIB) $(BUILD)
 	$(CPP) $(CFLAGS) Sparrow-C4A-Manager.c account.o menu.o highscore.o $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/Sparrow-C4A-Manager
 
 makeBuildDir:
