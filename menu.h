@@ -23,5 +23,6 @@ void draw_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_ve
 int calc_menu(Uint32 steps);
 void start_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small);
 void finish_menu();
+void set_error_mode(int e);
 
 #endif

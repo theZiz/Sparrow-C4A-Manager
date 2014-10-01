@@ -81,6 +81,10 @@ int calc(Uint32 steps)
 					state = highscore;
 					start_highscore();
 					break;
+				case 3:
+					if (spNetC4ACommitScore(NULL,"",0,NULL,TIME_OUT))
+						set_error_mode(1);
+					break;
 				case -1:
 					return 1;
 			}

@@ -56,6 +56,11 @@ void draw_middle_with_border(int x,int y,int z,char* text_,spFontPointer font,in
 	spRectangleBorder(x,y+font->maxheight/2,z,l_+2*BORDER_DISTANCE,font->maxheight+2*BORDER_DISTANCE,BORDER_SIZE*factor,BORDER_SIZE*factor,BORDER_COLOR);
 }
 
+int cachenr = 0;
+int menu_after_task = 0;
+
+int error_mode = 0;
+
 void draw_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small)
 {
 	SDL_Surface* screen = spGetWindowSurface();
@@ -63,15 +68,65 @@ void draw_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_ve
 	spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter menu point", font_very_small );
 	spFontDraw( 2, 2, 0, SP_PAD_NAME": Select menu point", font_very_small );
 	
-	draw_middle_with_border( screen->w*2/3, screen->h*1/8, 0, "Account Management", font, 0);
-	draw_middle_with_border( screen->w*2/3, screen->h*2/8, 0, "Online Highscores", font, 1);
-	draw_middle_with_border( screen->w*2/3, screen->h*3/8, 0, "Exit", font, 2);
+	draw_middle_with_border( screen->w*2/3, screen->h*1/9, 0, "Account Management", font, 0);
+	draw_middle_with_border( screen->w*2/3, screen->h*2/9, 0, "Online Highscores", font, 1);
+	char buffer[64];
+	sprintf(buffer,"Commit cached scores (%i)",cachenr);
+	draw_middle_with_border( screen->w*2/3, screen->h*3/9, 0, buffer, font, 2);
+	draw_middle_with_border( screen->w*2/3, screen->h*4/9, 0, "Exit", font, 3);
 	
-	spFontDrawTextBlock(middle,5,screen->h*4/8,0,help,spGetWindowSurface()->h,0,font_very_small);
+	spFontDrawTextBlock(middle,5,screen->h*5/9,0,help,spGetWindowSurface()->h,0,font_very_small);
+
+	switch (error_mode)
+	{
+		case 1:
+			spInterpolateTargetToColor(0,3*SP_ONE/4);
+			spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Couldn't submit. Check your internet connection!", font);
+			spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, "[B] Okay", font);
+			break;
+	}	
+	if (spNetC4AGetStatus() > 0)
+	{
+		spInterpolateTargetToColor(0,3*SP_ONE/4);
+		spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Submitting cached scores...", font);
+		sprintf(buffer,"Timeout in %i.%i",spNetC4AGetTimeOut()/1000,(spNetC4AGetTimeOut()/100)%10);
+		spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, buffer, font);
+	}
+}
+
+void set_error_mode(int e)
+{
+	error_mode = e;
 }
 
 int calc_menu(Uint32 steps)
 {
+	if (spNetC4AGetStatus() > 0)
+	{
+		menu_after_task = 1;
+		return 0;
+	}
+	if (menu_after_task)
+	{
+		if (spNetC4AGetTaskResult())
+			error_mode = 1;
+		else
+			cachenr = spNetC4AHowManyCached();
+	}
+	menu_after_task = 0;
+	
+	switch ( error_mode )
+	{
+		case 1:
+			if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
+			{
+				spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
+				error_mode = 0;
+			}
+			break;
+	}
+	if (error_mode)
+		return 0;
 	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
 		return -1;
 	if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
@@ -83,18 +138,20 @@ int calc_menu(Uint32 steps)
 				return 1;
 			case 1: //highscore
 				return 2;
-			case 2: //exit
+			case 2: //commit
+				return 3;
+			case 3: //exit
 				return -1;
 		}
 	}
 	if ( spGetInput()->axis[1] > 0)
 	{
-		menu_point = (menu_point + 1) % 3;
+		menu_point = (menu_point + 1) % 4;
 		spGetInput()->axis[1] = 0;
 	}
 	if ( spGetInput()->axis[1] < 0)
 	{
-		menu_point = (menu_point + 2) % 3;
+		menu_point = (menu_point + 3) % 4;
 		spGetInput()->axis[1] = 0;
 	}	
 	return 0;
@@ -102,6 +159,8 @@ int calc_menu(Uint32 steps)
 
 void start_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small)
 {
+	spNetC4AFreeProfile(spNetC4AGetProfile());
+	cachenr = spNetC4AHowManyCached();
 	help = spCreateTextBlock( explanation, spGetWindowSurface()->w-10,font_very_small);
 }
 
