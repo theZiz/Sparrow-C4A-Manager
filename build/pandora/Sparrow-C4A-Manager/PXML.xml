@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PXML xmlns="http://openpandora.org/namespaces/PXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PXML_schema.xsd">
   <package id="Sparrow-C4A-Manager-1337">
-    <version major="1" minor="0" release="3" build="4"/>
+    <version major="1" minor="0" release="4" build="0"/>
     <author name="Ziz" website="http://ziz.openhandhelds.org"/>
     <titles>
       <title lang="en_US">
@@ -19,6 +19,7 @@
 			* Viewing C4A highscores
 			Update 1.0.3.3: Changed appdata to c4a-mame appdata to create c4a-prof if needed
 			Update 1.0.3.4: Little bug fixes
+			Update 1.0.4.0: Possibility to submit cached scores
       </description>
     </descriptions>
     <description lang="en_US">
@@ -28,6 +29,7 @@
 			* Viewing C4A highscores
 			Update 1.0.3.3: Changed appdata to c4a-mame appdata to create c4a-prof if needed
 			Update 1.0.3.4: Little bug fixes
+			Update 1.0.4.0: Possibility to submit cached scores
     </description>
     <icon src="./Sparrow-C4A-Manager.png"/>
   </package>
@@ -35,7 +37,7 @@
     <exec command="./Sparrow-C4A-Manager.sh"/>
     <title lang="en_US">Sparrow C4A Manager</title>
     <author name="Ziz" website="http://ziz.openhandhelds.org"/>
-    <version major="1" minor="0" release="3" build="4"/>
+    <version major="1" minor="0" release="4" build="0"/>
     <osversion major="1" minor="0" release="0" build="0"/>
     <description lang="en_US">An alternative manager for Compo4all profiles.</description>
     <info name="Sparrow C4A" type="text/plain" src="Sparrow_C4A.md"/>
