@@ -23,7 +23,7 @@
 #elif defined PANDORA
 	#define C4A_POS "your compo4all appdata folder"
 #else
-	#define C4A_POS "/.config/compo4all/"
+	#define C4A_POS "~/.config/compo4all/"
 #endif
 
 char explanation[2048] = "Welcome to the Sparrow-C4A-Manager. C4A stands for \
