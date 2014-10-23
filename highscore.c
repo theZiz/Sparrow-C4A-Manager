@@ -149,7 +149,7 @@ void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer fo
 	else
 	{
 		spNetC4AScorePointer score = scoreList;
-		int y = 2*screen->h/9-spFixedToInt(scorePosition*screen->h/15);
+		int y = 2*screen->h/9-spFixedToInt(scorePosition*(screen->h/15));
 		while (score)
 		{
 			if (y > 1*screen->h/9 && y < 10*screen->h/9)
@@ -233,6 +233,9 @@ void updateScore()
 			right_after_task = 1;
 	}
 }
+
+int score_time = 0;
+int score_speed_up = 1;
 
 int calc_highscore(Uint32 steps)
 {
@@ -344,17 +347,36 @@ int calc_highscore(Uint32 steps)
 				year--;
 			}
 			updateScore();
-		}		if ( spGetInput()->axis[1] > 0)
+		}
+		if ( spGetInput()->axis[1] > 0)
 		{
-			scorePosition+=steps*1024;
+			score_time += steps;
+			if (score_time > 500)
+			{
+				score_time -= 500;
+				score_speed_up *= 2;
+			}
+			scorePosition+=steps*1024*score_speed_up;
 			if (spFixedToInt(scorePosition) > scoreCount-2)
 				scorePosition = spIntToFixed(scoreCount-2)+SP_ONE-1;
 		}
+		else
 		if (spGetInput()->axis[1] < 0)
 		{
-			scorePosition-=steps*1024;
+			score_time += steps;
+			if (score_time > 500)
+			{
+				score_time -= 500;
+				score_speed_up *= 2;
+			}
+			scorePosition-=steps*1024*score_speed_up;
 			if (spFixedToInt(scorePosition) <0)
 				scorePosition = 0;
+		}
+		else
+		{
+			score_time = 0;
+			score_speed_up = 1;
 		}
 	}
 	else
