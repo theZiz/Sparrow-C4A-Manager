@@ -5,7 +5,7 @@ CFLAGS = -O3 -fsingle-precision-constant -fPIC
 # Testtweaks: -fgcse-lm -fgcse-sm -fsched-spec-load -fmodulo-sched -funsafe-loop-optimizations -Wunsafe-loop-optimizations -fgcse-las -fgcse-after-reload -fvariable-expansion-in-unroller -ftracer -fbranch-target-load-optimize
 GENERAL_TWEAKS = -ffast-math
 #==PC==
-CPP = gcc -g -march=native -DX86CPU $(GENERAL_TWEAKS)
+CPP = gcc -g -DX86CPU $(GENERAL_TWEAKS)
 SDL = `sdl-config --cflags`
 
 SPARROW_FOLDER = ../sparrow3d
@@ -54,3 +54,6 @@ menu.o: menu.c menu.h defines.h
 clean:
 	rm -f *.o
 	rm -f Sparrow-C4A-Manager
+
+oclean:
+	rm -f *.o
