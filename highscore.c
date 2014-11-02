@@ -151,16 +151,17 @@ void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer fo
 	{
 		spNetC4AScorePointer score = scoreList;
 		int y = 2*screen->h/9-spFixedToInt(scorePosition*(screen->h/15));
+		int s = spFixedToInt(10*spGetSizeFactor());
 		while (score)
 		{
 			if (y > 1*screen->h/9 && y < 10*screen->h/9)
 			{
-				spFontDrawRight( screen->w/2-20, y, 0, score->longname, font );
+				spFontDrawRight( screen->w/2-2*s, y, 0, score->longname, font );
 				sprintf(buffer,"%i.",score->rank);
 				spFontDrawMiddle( screen->w/2, y, 0, buffer, font_very_small );
-				spLine(screen->w/2-10,y+font->maxheight*3/4,0,screen->w/2+10,y+font->maxheight*3/4,0,65535);
+				spLine(screen->w/2-s,y+font->maxheight*3/4,0,screen->w/2+s,y+font->maxheight*3/4,0,65535);
 				sprintf(buffer,"%i",score->score);
-				spFontDraw( screen->w/2+20, y, 0, buffer, font );
+				spFontDraw( screen->w/2+2*s, y, 0, buffer, font );
 			}
 			y+=screen->h/15;
 			score = score->next;
