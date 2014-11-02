@@ -36,6 +36,7 @@ int r_time = 0;
 int l_time = 0;
 int year,momYear;
 int month,momMonth;
+int filtered = 1;
 
 void draw_high_with_border(int x,int y,int z,const char* text_,spFontPointer font,int p)
 {
@@ -155,7 +156,9 @@ void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer fo
 			if (y > 1*screen->h/9 && y < 10*screen->h/9)
 			{
 				spFontDrawRight( screen->w/2-20, y, 0, score->longname, font );
-				spLine(screen->w/2-10,y+font->maxheight/2,0,screen->w/2+10,y+font->maxheight/2,0,65535);
+				sprintf(buffer,"%i.",score->rank);
+				spFontDrawMiddle( screen->w/2, y, 0, buffer, font_very_small );
+				spLine(screen->w/2-10,y+font->maxheight*3/4,0,screen->w/2+10,y+font->maxheight*3/4,0,65535);
 				sprintf(buffer,"%i",score->score);
 				spFontDraw( screen->w/2+20, y, 0, buffer, font );
 			}
@@ -184,6 +187,10 @@ void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer fo
 		spFontDrawMiddle( screen->w/2, screen->h/9, 0, buffer, font );
 		spFontDraw( 2, 2, 0, SP_PAD_NAME": Scroll", font_very_small );
 		spFontDrawMiddle( screen->w/2, 2, 0, "[L] & [R]: Select month", font_very_small );
+		if (filtered)
+			spFontDrawMiddle( screen->w/2, screen->h/18, 0, "[B] Filtered view: on", font_small);
+		else
+			spFontDrawMiddle( screen->w/2, screen->h/18, 0, "[B] Filtered view: off", font_small);
 	}
 	spFontDrawRight( screen->w-2, 2, 0, "[X] Back", font_very_small );
 
@@ -265,6 +272,8 @@ int calc_highscore(Uint32 steps)
 			}
 			else
 			{
+				if (filtered)
+					spNetC4AFilterScore(&scoreList);
 				showScore = 1;
 				scorePosition = 0;
 				spNetC4AScorePointer score = scoreList;
@@ -323,6 +332,12 @@ int calc_highscore(Uint32 steps)
 		return 0;
 	if ( showScore )
 	{
+		if (spGetInput()->button[SP_PRACTICE_OK_NOWASD])
+		{
+			spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
+			filtered = 1-filtered;
+			updateScore();
+		}
 		if (spGetInput()->button[SP_BUTTON_R_NOWASD])
 		{
 			spGetInput()->button[SP_BUTTON_R_NOWASD] = 0;
