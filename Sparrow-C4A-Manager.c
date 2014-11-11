@@ -15,18 +15,7 @@
   * For feedback and questions about my Files and Projects please mail me,
   * Alexander Matthes (Ziz) , zizsdl_at_googlemail.com */
 
-#define GCW_FEELING
-
-/*#if defined GCW_FEELING && defined X86CPU
-	#define TESTING
-	#define GCW
-	#undef X86CPU
-#endif*/
 #include <sparrow3d.h>
-/*#if defined GCW_FEELING && defined TESTING
-	#define X86CPU
-	#undef GCW
-#endif*/
 
 #include "defines.h"
 #include "menu.h"
