@@ -64,7 +64,7 @@ int error_mode = 0;
 void draw_menu(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small)
 {
 	SDL_Surface* screen = spGetWindowSurface();
-	spFontDrawRight( screen->w-2, 2, 0, "[X] Exit", font_very_small );
+	spFontDrawRight( screen->w-2, 2, 0, "[E] Exit", font_very_small );
 	spFontDrawMiddle( screen->w*2/3, 2, 0, "[B] Enter menu point", font_very_small );
 	spFontDraw( 2, 2, 0, SP_PAD_NAME": Select menu point", font_very_small );
 	
@@ -127,7 +127,7 @@ int calc_menu(Uint32 steps)
 	}
 	if (error_mode)
 		return 0;
-	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
+	if ( spGetInput()->button[SP_BUTTON_SELECT_NOWASD] )
 		return -1;
 	if ( spGetInput()->button[SP_PRACTICE_OK_NOWASD] )
 	{
