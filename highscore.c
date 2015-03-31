@@ -18,9 +18,14 @@
 #include "highscore.h"
 #include "defines.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+
 int highscore_blink = 0;
 char filter[256];
-int serverTask = 0; //getting game List
+spNetC4AGamePointer newGameList = NULL;
 spNetC4AGamePointer gameList = NULL;
 spNetC4AScorePointer scoreList = NULL;
 spNetC4AGamePointer beforeGame[2] = {NULL,NULL};
@@ -37,6 +42,7 @@ int l_time = 0;
 int year,momYear;
 int month,momMonth;
 int filtered = 1;
+spNetC4ATaskPointer task = NULL;
 
 void draw_high_with_border(int x,int y,int z,const char* text_,spFontPointer font,int p)
 {
@@ -111,6 +117,11 @@ void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer fo
 		{
 			spFontDrawMiddle( screen->w/5, screen->h/9, 0, "[B] View Highscore", font_small);
 			spFontDraw( 2, 2, 0, SP_PAD_NAME": Select Row", font_very_small );
+			if (task)
+			{
+				sprintf(buffer,"Updating %i.%i",spNetC4AGetTimeOutParallel(task)/1000,(spNetC4AGetTimeOutParallel(task)/100)%10);
+				spFontDrawMiddle( screen->w/2, 2, 0, buffer, font_very_small);
+			}
 		}
 		
 		spFontDrawRight( screen->w/2, 1*screen->h/9, 0, "Filter:", font);
@@ -120,7 +131,7 @@ void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer fo
 		spLine( 3*screen->w/4 + spFontWidth(filter,font)/2+1, 2*screen->h/18, 0,
 				3*screen->w/4 + spFontWidth(filter,font)/2+1, 3*screen->h/18-1, 0, ((highscore_blink/512)&1)?0:65535);
 
-		if (serverTask > 0)
+		if (gameList)
 		{
 			if (selectedGame)
 			{
@@ -212,14 +223,8 @@ void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer fo
 	if (spNetC4AGetStatus() > 0)
 	{
 		spInterpolateTargetToColor(0,3*SP_ONE/4);
-		switch (serverTask)
-		{
-			case 0: spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, "Getting game list...", font); break;
-			case 1:
-				sprintf(buffer,"Getting highscore of %s...",selectedGame->longname);
-				spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, buffer, font);
-				break;
-		}
+		sprintf(buffer,"Getting highscore of %s...",selectedGame->longname);
+		spFontDrawMiddle( screen->w/2, screen->h/2-font->maxheight/2, 0, buffer, font);
 		sprintf(buffer,"Timeout in %i.%i",spNetC4AGetTimeOut()/1000,(spNetC4AGetTimeOut()/100)%10);
 		spFontDrawMiddle( screen->w/2, screen->h/2+font->maxheight/2, 0, buffer, font);
 	}
@@ -245,6 +250,46 @@ void updateScore()
 int score_time = 0;
 int score_speed_up = 1;
 
+void save_game_list()
+{
+	char buffer[512];
+	spConfigGetPath(buffer,"Sparrow-C4A-Manager","gamelist.cache");
+	int fd = creat(buffer,0666);
+	spNetC4AGamePointer game = gameList;
+	while (game)
+	{
+		write(fd,game,sizeof(spNetC4AGame));
+		game = game->next;
+	}
+	close(fd);
+}
+
+void load_game_list()
+{
+	char buffer[512];
+	spConfigGetPath(buffer,"Sparrow-C4A-Manager","gamelist.cache");
+	int fd = open(buffer,O_RDONLY);
+	printf("%s\n",buffer);
+	if (fd < 0)
+		return;
+	spNetC4AGamePointer game = (spNetC4AGamePointer)malloc(sizeof(spNetC4AGame));
+	spNetC4AGamePointer last = NULL;
+	gameCount = 0;
+	while (read(fd,game,sizeof(spNetC4AGame)))
+	{
+		if (last)
+			last->next = game;
+		else
+			gameList = game;
+		last = game;
+		game = (spNetC4AGamePointer)malloc(sizeof(spNetC4AGame));
+		gameCount++;
+	}
+	free(game);
+	close(fd);
+	updateSelectedGame();
+}
+
 int calc_highscore(Uint32 steps)
 {
 	highscore_blink+=steps;
@@ -253,12 +298,17 @@ int calc_highscore(Uint32 steps)
 		right_after_task = 1;
 		return 0;
 	}
-	if (right_after_task)
+	
+	if (right_after_task || (task && spNetC4AGetStatusParallel(task) <= 0))
 	{
-		if (spNetC4AGetTaskResult() == 0)
+		if (task)
 		{
-			if (serverTask == 0)
+			if (spNetC4AGetStatusParallel(task) == 0)
 			{
+				spNetC4ADeleteGames(&gameList);
+				gameList = newGameList;
+				newGameList = NULL;
+
 				spNetC4AGamePointer game = gameList;
 				selectedGame = gameList;
 				gameCount = 0;
@@ -268,31 +318,33 @@ int calc_highscore(Uint32 steps)
 					gameCount++;
 					game = game->next;
 				}
-				spPollKeyboardInput(filter,256,SP_PRACTICE_OK_NOWASD_MASK);
-				serverTask = 1;
+				
+				updateSelectedGame();
+				
+				save_game_list();
 			}
 			else
+				highMode = 1;
+			spNetC4ADeleteTask(task);
+			task = NULL;
+		}
+		else
+		if (spNetC4AGetTaskResult() == 0)
+		{
+			if (filtered)
+				spNetC4AFilterScore(&scoreList);
+			showScore = 1;
+			scorePosition = 0;
+			spNetC4AScorePointer score = scoreList;
+			scoreCount = 0;
+			while (score)
 			{
-				if (filtered)
-					spNetC4AFilterScore(&scoreList);
-				showScore = 1;
-				scorePosition = 0;
-				spNetC4AScorePointer score = scoreList;
-				scoreCount = 0;
-				while (score)
-				{
-					scoreCount++;
-					score = score->next;
-				}
+				scoreCount++;
+				score = score->next;
 			}
 		}
 		else
-		{
-			if (serverTask == 0)
-				highMode = 1; //error
-			else
-				highMode = 2;
-		}
+			highMode = 2;
 	}
 	right_after_task = 0;
 	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
@@ -318,7 +370,6 @@ int calc_highscore(Uint32 steps)
 			{
 				spGetInput()->button[SP_PRACTICE_OK_NOWASD] = 0;
 				highMode = 0;
-				return 1;
 			}
 			break;
 		case 2:
@@ -329,7 +380,7 @@ int calc_highscore(Uint32 steps)
 			}
 			break;
 	}
-	if (highMode)
+	if (highMode || gameCount == 0)
 		return 0;
 	if ( showScore )
 	{
@@ -492,14 +543,14 @@ void start_highscore()
 	pos = 0;
 	highMode = 0;
 	showScore = 0;
-	gameCount = 0;
+	load_game_list();
 	right_after_task = 0;	
-	serverTask = 0;
-	if (spNetC4AGetGame(&gameList,TIME_OUT) == 0)
-		right_after_task = 1;
+	task = spNetC4AGetGameParallel(&newGameList,LIST_TIME_OUT);
+	spPollKeyboardInput(filter,256,SP_PRACTICE_OK_NOWASD_MASK);
 }
 
 void finish_highscore()
 {
+	spNetC4ADeleteGames(&newGameList);
 	spNetC4ADeleteGames(&gameList);
 }

@@ -38,7 +38,7 @@ targets:
 Sparrow-C4A-Manager: Sparrow-C4A-Manager.c account.o menu.o highscore.o defines.h makeBuildDir
 	cp $(SPARROW_LIB)/$(SPARROW3D_LIB) $(BUILD)
 	cp $(SPARROW_LIB)/$(SPARROWNET_LIB) $(BUILD)
-	$(CC) $(CFLAGS) Sparrow-C4A-Manager.c account.o menu.o highscore.o $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/Sparrow-C4A-Manager
+	$(CC) $(CFLAGS) $(LINK_FLAGS) $< account.o menu.o highscore.o $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/$@$(SUFFIX)
 
 makeBuildDir:
 	 @if [ ! -d $(BUILD:/Sparrow-C4A-Manager=/) ]; then mkdir $(BUILD:/Sparrow-C4A-Manager=/);fi
