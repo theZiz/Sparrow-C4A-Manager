@@ -1,7 +1,7 @@
 #!/bin/sh
 # Change the folder to YOUR sparrow3d folder!
 PROGRAM="Sparrow-C4A-Manager"
-VERSION="1.0.6.0"
+VERSION="1.0.6.2"
 DEST=./build/*
 echo "<html>" > index.htm
 echo "<head>" >> index.htm

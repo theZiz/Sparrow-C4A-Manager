@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 
 int highscore_blink = 0;
@@ -43,6 +44,7 @@ int year,momYear;
 int month,momMonth;
 int filtered = 1;
 spNetC4ATaskPointer task = NULL;
+int real_timeout;
 
 void draw_high_with_border(int x,int y,int z,const char* text_,spFontPointer font,int p)
 {
@@ -237,12 +239,12 @@ void updateScore()
 	spNetC4ADeleteScores(&scoreList);
 	if (year == momYear && month == momMonth + 1)
 	{
-		if (spNetC4AGetScore(&scoreList,NULL,selectedGame->shortname,TIME_OUT) == 0)
+		if (spNetC4AGetScore(&scoreList,NULL,selectedGame->shortname,real_timeout) == 0)
 			right_after_task = 1;
 	}
 	else
 	{
-		if (spNetC4AGetScoreOfMonth(&scoreList,NULL,selectedGame->shortname,year,month,TIME_OUT) == 0)
+		if (spNetC4AGetScoreOfMonth(&scoreList,NULL,selectedGame->shortname,year,month,real_timeout) == 0)
 			right_after_task = 1;
 	}
 }
@@ -342,9 +344,13 @@ int calc_highscore(Uint32 steps)
 				scoreCount++;
 				score = score->next;
 			}
+			real_timeout = TIME_OUT;
 		}
 		else
+		{
 			highMode = 2;
+			real_timeout += TIME_OUT_ADD;
+		}
 	}
 	right_after_task = 0;
 	if ( spGetInput()->button[SP_PRACTICE_CANCEL_NOWASD] )
@@ -537,6 +543,7 @@ int calc_highscore(Uint32 steps)
 
 void start_highscore()
 {
+	real_timeout = TIME_OUT;
 	beforeGame[0] = NULL;
 	beforeGame[1] = NULL;
 	selectedGame = NULL;

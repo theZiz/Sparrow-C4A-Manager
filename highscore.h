@@ -18,10 +18,18 @@
 #ifndef _HIGHSCORE_H
 #define _HIGHSCORE_H
 #include <sparrow3d.h>
+#include <string.h>
+#include <stdlib.h>
 
 void draw_account(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small);
 int calc_account(Uint32 steps);
 void start_account();
 void finish_account();
+
+void draw_highscore(spFontPointer font,spFontPointer font_small,spFontPointer font_very_small);
+int calc_highscore(Uint32 steps);
+void start_highscore();
+void finish_highscore();
+
 
 #endif

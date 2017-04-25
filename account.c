@@ -17,6 +17,7 @@
 
 #include "account.h"
 #include "defines.h"
+#include <string.h>
 
 int mode = 0; //0 no prof file found, 1 profile file exists
 int nextMode = 0;

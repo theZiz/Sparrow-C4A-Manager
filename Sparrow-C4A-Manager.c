@@ -20,6 +20,7 @@
 #include "defines.h"
 #include "menu.h"
 #include "account.h"
+#include "highscore.h"
 
 SDL_Surface* screen;
 spFontPointer font = NULL;

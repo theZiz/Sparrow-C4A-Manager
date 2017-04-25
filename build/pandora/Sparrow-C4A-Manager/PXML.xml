@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PXML xmlns="http://openpandora.org/namespaces/PXML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PXML_schema.xsd">
   <package id="Sparrow-C4A-Manager-1337">
-    <version major="1" minor="0" release="6" build="0"/>
+    <version major="1" minor="0" release="6" build="1"/>
     <author name="Ziz" website="http://ziz.openhandhelds.org"/>
     <titles>
       <title lang="en_US">
@@ -28,6 +28,7 @@
 			Update 1.0.5.2: Feature request: Not using (X) to exit anymore ;)
 			Update 1.0.5.3: Obviously did nobody ever try to delete an account...
 			Update 1.0.6: Caching of the game list for shitty connections
+			Update 1.0.6.1: Time out increases after failed connection
       </description>
     </descriptions>
     <description lang="en_US">
@@ -46,6 +47,7 @@
 			Update 1.0.5.2: Feature request: Not using (X) to exit anymore ;)
 			Update 1.0.5.3: Obviously did nobody ever try to delete an account...
 			Update 1.0.6: Caching of the game list for shitty connections
+			Update 1.0.6.1: Time out increases after failed connection
     </description>
     <icon src="./Sparrow-C4A-Manager.png"/>
   </package>
@@ -53,7 +55,7 @@
     <exec command="./Sparrow-C4A-Manager.sh"/>
     <title lang="en_US">Sparrow C4A Manager</title>
     <author name="Ziz" website="http://ziz.openhandhelds.org"/>
-    <version major="1" minor="0" release="6" build="0"/>
+    <version major="1" minor="0" release="6" build="1"/>
     <osversion major="1" minor="0" release="0" build="0"/>
     <description lang="en_US">An alternative manager for Compo4all profiles.</description>
     <info name="Sparrow C4A" type="text/plain" src="Sparrow_C4A.md"/>
